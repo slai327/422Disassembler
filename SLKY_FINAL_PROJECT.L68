@@ -1,0 +1,2262 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 7/13/2019 4:16:53 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : FINAL PROJECT
+00000000                             3  * Written by : SLKY
+00000000                             4  * Date       : 5/15/2019
+00000000                             5  * Description: SLKY Final Project
+00000000                             6  *-----------------------------------------------------------
+00000000  =0000000C                  7  shift            EQU     12                   * Shift 12 bits 
+00000000                             8  *Program starts here
+00001000                             9                ORG     $1000
+00001000  4286                      10  start        CLR.L  D6
+00001002  4284                      11               CLR.L  D4
+00001004  103C 000B                 12               MOVE.B   #11,D0
+00001008  323C FF00                 13               MOVE.W   #$FF00,D1
+0000100C  4E4F                      14               TRAP      #15
+0000100E  4FF9 00FFFFFE             15               LEA    $FFFFFE,SP                  *Set the stack pointer
+00001014                            16  **Prompt for User Input (start address):
+00001014  43F9 0000287A             17               LEA    breakLn,A1
+0000101A  103C 000E                 18               Move.B #14,D0
+0000101E  4E4F                      19               Trap   #15
+00001020  43F9 000027A8             20               LEA    prompt,A1
+00001026  103C 000E                 21               Move.B #14,D0
+0000102A  4E4F                      22               Trap   #15
+0000102C  43F9 000027EE             23               LEA    promptSpecs,A1
+00001032  103C 000E                 24               Move.B #14,D0
+00001036  4E4F                      25               Trap   #15
+00001038  43F9 00002834             26               LEA    promptSpecs2,A1
+0000103E  103C 000E                 27               Move.B #14,D0
+00001042  4E4F                      28               Trap   #15
+00001044  43F9 0000287A             29               LEA    breakLn,A1
+0000104A  103C 000E                 30               Move.B #14,D0
+0000104E  4E4F                      31               Trap   #15
+00001050                            32               
+00001050  5B47                      33               SUBQ   #5,D7
+00001052                            34  *------------------------------------------------*    
+00001052                            35  *-* Retreival of User Input for start address: *-*
+00001052                            36  *------------------------------------------------* 
+00001052  43F9 00002AF2             37  getStartAddr LEA    center,A1
+00001058  103C 000E                 38               Move.B #14,D0
+0000105C  4E4F                      39               Trap   #15
+0000105E  5547                      40               SUBQ   #2,D7
+00001060  183C 0001                 41               Move.B  #$1, D4             * 1 in D4 means checking start length
+00001064  43F9 00002B10             42               LEA     startingAddr,A1     * Moving variable startingAddr to A1 to store input
+0000106A  103C 0002                 43               Move.B  #2,D0               * Moving cin instruction to D0
+0000106E  4E4F                      44               Trap     #15                * Executing instruction
+00001070                            45               
+00001070  4EB9 0000248E             46               JSR     checkLength         * Check Length of input
+00001076  4EB9 000024D0             47               JSR     toHex               * Check for valid hex entry
+0000107C  4EB9 00002544             48               JSR     checkOdd            * Check if it is and odd number
+00001082  4EB9 00002578             49               JSR     checkRange          * Check for valid range
+00001088                            50   
+00001088                            51  **Prompt for User Input (end address):
+00001088  43F9 0000287A             52               LEA    breakLn,A1
+0000108E  103C 000E                 53               Move.B #14,D0
+00001092  4E4F                      54               Trap   #15
+00001094  43F9 000028C0             55               LEA    prompt2,A1
+0000109A  103C 000E                 56               Move.B #14,D0
+0000109E  4E4F                      57               Trap   #15
+000010A0  43F9 00002906             58               LEA    promptEnd,A1
+000010A6  103C 000E                 59               Move.B #14,D0
+000010AA  4E4F                      60               Trap   #15
+000010AC  43F9 0000294C             61               LEA    promptEnd2,A1
+000010B2  103C 000E                 62               Move.B #14,D0
+000010B6  4E4F                      63               Trap   #15
+000010B8  43F9 0000287A             64               LEA    breakLn,A1
+000010BE  103C 000E                 65               Move.B #14,D0
+000010C2  4E4F                      66               Trap   #15
+000010C4                            67               
+000010C4  5B47                      68               SUBQ   #5,D7
+000010C6                            69                 
+000010C6                            70                 
+000010C6                            71  *------------------------------------------------*    
+000010C6                            72  *-*  Retreival of User Input for end address:  *-*
+000010C6                            73  *------------------------------------------------*               
+000010C6  43F9 00002AF2             74  getEndAddr   LEA    center,A1
+000010CC  103C 000E                 75               Move.B #14,D0
+000010D0  4E4F                      76               Trap   #15
+000010D2                            77               
+000010D2  5547                      78               SUBQ   #2,D7
+000010D4                            79               
+000010D4  183C 0002                 80               Move.B  #$2, D4             * 2 in D4 means checking end length
+000010D8  43F9 00002B60             81               LEA     endingAddr,A1       * Moving variable startingAddr to A1 to store input
+000010DE  103C 0002                 82               Move.B  #2,D0               * Moving cin instruction to D0
+000010E2  4E4F                      83               Trap     #15                * Executing instruction
+000010E4                            84               
+000010E4  4EB9 0000248E             85               JSR     checkLength         * Check Length of input
+000010EA  4EB9 000024D0             86               JSR     toHex               * Check for valid hex entry
+000010F0  4EB9 00002544             87               JSR     checkOdd            * Check if it is and odd number
+000010F6  4EB9 00002578             88               JSR     checkRange          * Check for valid range
+000010FC                            89  
+000010FC                            90  **Input Correct dispay next task: 
+000010FC                            91               *CMP      #15,D7        * If: D7 >15
+000010FC                            92               *BGT      cont          * Display next message Else: clear screen
+000010FC  103C 000B                 93               Move.B   #11, D0       * Trap task 11 will be defined by D1
+00001100  323C FF00                 94               Move.W   #$FF00,D1     * Instruction to clear page
+00001104  4E4F                      95               TRAP     #15           * Execute instruction
+00001106  1E3C 001E                 96               Move.B   #30, D7       * Reset D7
+0000110A                            97             
+0000110A  43F9 0000287A             98               LEA    breakLn,A1
+00001110  103C 000E                 99               Move.B #14,D0
+00001114  4E4F                     100               Trap   #15
+00001116  43F9 00002992            101               LEA    corrInput,A1
+0000111C  103C 000E                102               Move.B #14,D0
+00001120  4E4F                     103               Trap   #15
+00001122  43F9 0000287A            104               LEA    breakLn,A1
+00001128  103C 000E                105               Move.B #14,D0
+0000112C  4E4F                     106               Trap   #15
+0000112E  7E18                     107               MOVE.L #$18,D7
+00001130                           108                
+00001130  BDCD                     109  mainloop       CMPA.L   A5,A6
+00001132  6700 0112                110                 BEQ      maindone
+00001136  BDCD                     111                 CMPA.L   A5,A6
+00001138  6D00 010C                112                 BLT      maindone
+0000113C  BE3C 0000                113                 CMP.B    #0,D7
+00001140  6700 00D0                114                 BEQ      loadnewpage
+00001144  4FF9 00FFFFFE            115                 LEA      $FFFFFE,SP
+0000114A  4281                     116                 CLR.L    D1
+0000114C  4282                     117                 CLR.L    D2
+0000114E  4283                     118                 CLR.L    D3
+00001150  4284                     119                 CLR.L    D4
+00001152  4285                     120                 CLR.L    D5
+00001154  4286                     121                 CLR.L    D6                      *Clear Registers
+00001156  284D                     122                 MOVEA.L  A5,A4                   *instruction is now current line
+00001158  45F9 00002744            123                 LEA      message,A2
+0000115E  41F9 000012C8            124                 LEA      jmp_table,A0            *Index into the table
+00001164  4280                     125                 CLR.L    D0                      *Zero it
+00001166  280D                     126                 MOVE.L   A5,D4
+00001168  E04C                     127                 LSR.W    #8,D4
+0000116A  E04C                     128                 LSR.W    #8,D4
+0000116C  4EB9 000023DC            129                 JSR      wordtoasc               *Process first half of current address
+00001172  380D                     130                 MOVE.W   A5,D4
+00001174  4EB9 000023DC            131                 JSR      wordtoasc               *Process second half of current address
+0000117A  14FC 0020                132                 MOVE.B   #$20,(A2)+              *Add " " to the message
+0000117E  341C                     133                 MOVE.W   (A4)+,D2                *Get the instruction
+00001180  3602                     134                 MOVE.W   D2,D3
+00001182  123C 000C                135                 MOVE.B   #shift,D1               *Shift 12 bits to the right  
+00001186  E26A                     136                 LSR.W    D1,D2                   *Move the bits
+00001188  C4FC 0006                137                 MULU     #6,D2                   
+0000118C  4EB0 2000                138                 JSR      0(A0,D2)                *Jump into proper op code
+00001190  43F9 00002744            139                 LEA      message,A1
+00001196  B23C 0001                140                 CMP.B    #1,D1
+0000119A  6700 002C                141                 BEQ      error                   *Error flag is set
+0000119E  B23C 0002                142                 CMP.B    #2,D1
+000011A2  6700 0010                143                 BEQ      invalidea               *Invalid EA flag
+000011A6  4EB9 00002414            144                 JSR      formatOutput            *Print message
+000011AC  5307                     145                 SUB.B    #1,D7                   *Subtract from line counter
+000011AE  2A4C                     146                 MOVEA.L  A4,A5                   *Move the current line to the instruction
+000011B0  6000 FF7E                147                 BRA      mainloop            
+000011B4                           148  
+000011B4  45F9 00002744            149  invalidea      LEA      message,A2
+000011BA  4EB9 00002414            150                 JSR      formatOutput            *Print the message
+000011C0  548D                     151                 ADDA.L   #2,A5                   *Increment address
+000011C2  5307                     152                 SUB.B    #1,D7
+000011C4  6000 FF6A                153                 BRA      mainloop
+000011C8                           154                         
+000011C8  45F9 00002744            155  error          LEA      message,A2
+000011CE  280D                     156                 MOVE.L   A5,D4
+000011D0  E04C                     157                 LSR.W    #8,D4
+000011D2  E04C                     158                 LSR.W    #8,D4
+000011D4  4EB9 000023DC            159                 JSR      wordtoasc               *Process first half of current address
+000011DA  380D                     160                 MOVE.W   A5,D4
+000011DC  4EB9 000023DC            161                 JSR      wordtoasc               *Process second half of current address
+000011E2  14FC 0020                162                 MOVE.B   #$20,(A2)+              *Add " " to the message
+000011E6  14FC 0044                163                 MOVE.B   #$44,(A2)+
+000011EA  14FC 0041                164                 MOVE.B   #$41,(A2)+
+000011EE  14FC 0054                165                 MOVE.B   #$54,(A2)+
+000011F2  14FC 0041                166                 MOVE.B   #$41,(A2)+
+000011F6  14FC 0020                167                 MOVE.B   #$20,(A2)+              *Add "DATA " to the message
+000011FA  381D                     168                 MOVE.W   (A5)+,D4                *Get the original instruction
+000011FC  4EB9 000023DC            169                 JSR      wordtoasc               *convert word to ascii
+00001202  14FC 0000                170                 MOVE.B   #0,(A2)+                *Add null character
+00001206  4EB9 00002414            171                 JSR      formatOutput   
+0000120C  5307                     172                 SUB.B    #1,D7                   *Subtract from line counter
+0000120E  6000 FF20                173                 BRA      mainloop
+00001212                           174         
+00001212  43F9 00002A1E            175  loadnewpage    LEA      instruct,A1
+00001218  103C 000E                176                 MOVE.B   #14,D0
+0000121C  4E4F                     177                 TRAP     #15
+0000121E  43F9 00002BB0            178                 LEA      userInput,A1
+00001224  103C 0002                179                 MOVE.B   #2,D0
+00001228  4E4F                     180                 TRAP     #15
+0000122A  3811                     181                 MOVE.W   (A1),D4
+0000122C  B87C 4E4F                182                 CMP.W    #$4E4F,D4
+00001230  6700 FDCE                183                 BEQ      start
+00001234  103C 000B                184                 MOVE.B   #11,D0
+00001238  323C FF00                185                 MOVE.W   #$FF00,D1
+0000123C  4E4F                     186                 TRAP     #15
+0000123E  1E3C 001B                187                 MOVE.B   #27,D7
+00001242  6000 FEEC                188                 BRA      mainloop
+00001246                           189         
+00001246  43F9 00002744            190  maindone       LEA      message,A1
+0000124C  45F9 00002744            191                 LEA      message,A2
+00001252  14FC 0045                192                 MOVE.B   #$45,(A2)+
+00001256  14FC 004E                193                 MOVE.B   #$4E,(A2)+
+0000125A  14FC 0044                194                 MOVE.B   #$44,(A2)+              *Add "END" to the message
+0000125E  14FC 0000                195                 MOVE.B   #0,(A2)+                *Add null character
+00001262  4EB9 00002414            196                 JSR      formatOutput            *Print message
+00001268  43F9 00002A1E            197                 LEA      instruct,A1
+0000126E  103C 000E                198                 MOVE.B   #14,D0
+00001272  4E4F                     199                 TRAP     #15
+00001274  43F9 00002BB0            200                 LEA      userInput,A1
+0000127A  103C 0002                201                 MOVE.B   #2,D0
+0000127E  4E4F                     202                 TRAP     #15
+00001280  103C 000B                203                 MOVE.B   #11,D0
+00001284  323C FF00                204                 MOVE.W   #$FF00,D1
+00001288  4E4F                     205                 TRAP     #15
+0000128A  4EF9 00001290            206                 JMP      continueprog
+00001290                           207                 
+00001290  43F9 00002A67            208  continueprog   LEA      againPrompt,A1
+00001296  103C 000E                209                 MOVE.B   #14,D0
+0000129A  4E4F                     210                 TRAP     #15
+0000129C  43F9 00002AAD            211                 LEA      continueprompt,A1
+000012A2  4E4F                     212                 TRAP     #15
+000012A4  43F9 00002BB0            213                 LEA      userInput,A1
+000012AA  103C 0002                214                 MOVE.B   #2,D0
+000012AE  4E4F                     215                 TRAP     #15
+000012B0  3811                     216                 MOVE.W   (A1),D4
+000012B2  B87C 4E4F                217                 CMP.W    #$4E4F,D4
+000012B6  6700 0006                218                 BEQ      stopprog
+000012BA  4EF8 1000                219                 JMP      start
+000012BE                           220                 
+000012BE  103C 0009                221  stopprog       MOVE.B   #9,D0
+000012C2  4E4F                     222                 TRAP     #15
+000012C4  FFFF FFFF                223                SIMHALT
+000012C8                           224  *---------------------------------------------------------------------
+000012C8                           225  *TESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTINGTESTING
+000012C8                           226  *---------------------------------------------------------------------               
+000012C8                           227                 
+000012C8                           228  *---------------------------------------------------------------------
+000012C8                           229  *JUMP TABLE for OP CODES
+000012C8                           230  *   D2: Jump offset
+000012C8                           231  *   A0: JUMP TABLE
+000012C8                           232  *---------------------------------------------------------------------
+000012C8  4EF9 00001328            233  jmp_table      JMP         code0000
+000012CE  4EF9 0000132E            234                 JMP         code0001
+000012D4  4EF9 000013F2            235                 JMP         code0010
+000012DA  4EF9 00001464            236                 JMP         code0011
+000012E0  4EF9 000014D6            237                 JMP         code0100
+000012E6  4EF9 000019A6            238                 JMP         code0101
+000012EC  4EF9 00001A68            239                 JMP         code0110
+000012F2  4EF9 00001ACC            240                 JMP         code0111
+000012F8  4EF9 00001B24            241                 JMP         code1000
+000012FE  4EF9 00001BD0            242                 JMP         code1001
+00001304  4EF9 00001C78            243                 JMP         code1010
+0000130A  4EF9 00001C7E            244                 JMP         code1011
+00001310  4EF9 00001C84            245                 JMP         code1100
+00001316  4EF9 00001D3C            246                 JMP         code1101
+0000131C  4EF9 00001DE4            247                 JMP         code1110
+00001322  4EF9 000020CC            248                 JMP         code1111
+00001328                           249                 
+00001328                           250  *---------------------------------------------------------------------
+00001328                           251  *NOT USED
+00001328                           252  *---------------------------------------------------------------------
+00001328  123C 0001                253  code0000       MOVE.B   #1,D1
+0000132C  4E75                     254                 RTS
+0000132E                           255  
+0000132E                           256  *---------------------------------------------------------------------
+0000132E                           257  *MOVE.B
+0000132E                           258  *   A2: Message
+0000132E                           259  *   D3: Original Instruction
+0000132E                           260  * TODO: DIFFERENTIATE BETWEEN MOVE AND MOVEA
+0000132E                           261  *---------------------------------------------------------------------
+0000132E  14FC 004D                262  code0001       MOVE.B   #$4D,(A2)+
+00001332  14FC 004F                263                 MOVE.B   #$4F,(A2)+
+00001336  14FC 0056                264                 MOVE.B   #$56,(A2)+
+0000133A  14FC 0045                265                 MOVE.B   #$45,(A2)+              *Add "MOVE" to the message
+0000133E  1C3C 0000                266                 MOVE.B   #%00,D6
+00001342  3803                     267                 MOVE.W   D3,D4
+00001344  0244 01C0                268                 ANDI.W   #%0000000111000000,D4
+00001348  EC4C                     269                 LSR      #6,D4
+0000134A  4EB9 00002214            270                 JSR      isaddress
+00001350  14FC 002E                271                 MOVE.B   #$2E,(A2)+              *Add ".B  " to the message
+00001354  14FC 0042                272                 MOVE.B   #$42,(A2)+
+00001358  14FC 0020                273                 MOVE.B   #$20,(A2)+
+0000135C  3403                     274                 MOVE.W   D3,D2                   *Make a copy of the original instruction
+0000135E  0242 0038                275                 ANDI.W   #%0000000000111000,D2
+00001362  E64A                     276                 LSR      #3,D2                   *Get source mode
+00001364  C4FC 0006                277                 MULU     #6,D2
+00001368  3803                     278                 MOVE.W   D3,D4
+0000136A  0244 0007                279                 ANDI.W   #%0000000000000111,D4
+0000136E  41F9 000020D2            280                 LEA      ea_jump,A0              *load jump table
+00001374  4EB0 2000                281                 JSR      0(A0,D2)                *jump to source mode
+00001378  14FC 002C                282                 MOVE.B   #$2C,(A2)+
+0000137C  3403                     283                 MOVE.W   D3,D2
+0000137E  0242 01C0                284                 ANDI.W   #%0000000111000000,D2
+00001382  EC4A                     285                 LSR      #6,D2
+00001384  C4FC 0006                286                 MULU     #6,D2
+00001388  3803                     287                 MOVE.W   D3,D4
+0000138A  0244 0E00                288                 ANDI.W   #%0000111000000000,D4
+0000138E  E04C                     289                 LSR      #8,D4
+00001390  E24C                     290                 LSR      #1,D4
+00001392  4EB0 2000                291                 JSR      0(A0,D2)
+00001396  14BC 0000                292                 MOVE.B   #$0,(A2)                *end message(NULL)
+0000139A  4EB9 000013A2            293                 JSR      movecheck
+000013A0  4E75                     294                 RTS
+000013A2                           295  
+000013A2  3403                     296  movecheck      MOVE.W   D3,D2
+000013A4  EC4A                     297                 LSR      #6,D2
+000013A6  0242 0007                298                 ANDI.W   #$0007,D2               *Get EA mode
+000013AA  3803                     299                 MOVE.W   D3,D4
+000013AC  E04C                     300                 LSR      #8,D4                   *Get register
+000013AE  E24C                     301                 LSR      #1,D4
+000013B0  0244 0007                302                 ANDI.W   #$0007,D4
+000013B4  B43C 0007                303                 CMP.B    #%111,D2
+000013B8  6700 0004                304                 BEQ      moveimm                *Check if destination is Immediate Addressing
+000013BC  4E75                     305                 RTS
+000013BE                           306                 
+000013BE  B83C 0004                307  moveimm        CMP.B    #%100,D4
+000013C2  6700 0004                308                 BEQ      moveerror
+000013C6  4E75                     309                 RTS
+000013C8                           310                 
+000013C8  45F9 00002744            311  moveerror      LEA      message,A2
+000013CE  D4FC 0009                312                 ADDA.W   #9,A2                   *load message and move to after address
+000013D2  14FC 004D                313                 MOVE.B   #$4D,(A2)+
+000013D6  14FC 004F                314                 MOVE.B   #$4F,(A2)+
+000013DA  14FC 0056                315                 MOVE.B   #$56,(A2)+
+000013DE  14FC 0045                316                 MOVE.B   #$45,(A2)+
+000013E2  14FC 0020                317                 MOVE.B   #$20,(A2)+              *Add "MOVE " back to message
+000013E6  123C 0002                318                 MOVE.B   #2,D1
+000013EA  4EB9 00002460            319                 JSR      invalidmsg              *Add "INVALID EA" to message
+000013F0  4E75                     320                 RTS
+000013F2                           321  
+000013F2                           322  *---------------------------------------------------------------------
+000013F2                           323  *MOVE.L
+000013F2                           324  *   A2: Message
+000013F2                           325  *   D3: Original Instruction
+000013F2                           326  * TODO: DIFFERENTIATE BETWEEN MOVE AND MOVEA
+000013F2                           327  *---------------------------------------------------------------------
+000013F2  14FC 004D                328  code0010       MOVE.B   #$4D,(A2)+
+000013F6  14FC 004F                329                 MOVE.B   #$4F,(A2)+
+000013FA  14FC 0056                330                 MOVE.B   #$56,(A2)+
+000013FE  14FC 0045                331                 MOVE.B   #$45,(A2)+              *Add "MOVE" to the message
+00001402  1C3C 0002                332                 MOVE.B   #%10,D6
+00001406  3803                     333                 MOVE.W   D3,D4
+00001408  0244 01C0                334                 ANDI.W   #%0000000111000000,D4
+0000140C  EC4C                     335                 LSR      #6,D4
+0000140E  4EB9 00002214            336                 JSR      isaddress
+00001414  14FC 002E                337                 MOVE.B   #$2E,(A2)+              *Add ".L  " to the message
+00001418  14FC 004C                338                 MOVE.B   #$4C,(A2)+
+0000141C  14FC 0020                339                 MOVE.B   #$20,(A2)+
+00001420  3403                     340                 MOVE.W   D3,D2                   *Make a copy of the original instruction
+00001422  0242 0038                341                 ANDI.W   #%0000000000111000,D2
+00001426  E64A                     342                 LSR.W    #3,D2                   *Get source mode
+00001428  C4FC 0006                343                 MULU     #6,D2
+0000142C  3803                     344                 MOVE.W   D3,D4
+0000142E  0244 0007                345                 ANDI.W   #%0000000000000111,D4
+00001432  41F9 000020D2            346                 LEA      ea_jump,A0              *load jump table
+00001438  4EB0 2000                347                 JSR      0(A0,D2)                *jump to source mode
+0000143C  14FC 002C                348                 MOVE.B   #$2C,(A2)+
+00001440  3403                     349                 MOVE.W   D3,D2
+00001442  0242 01C0                350                 ANDI.W   #%0000000111000000,D2
+00001446  EC4A                     351                 LSR      #6,D2
+00001448  C4FC 0006                352                 MULU     #6,D2
+0000144C  3803                     353                 MOVE.W   D3,D4
+0000144E  0244 0E00                354                 ANDI.W   #%0000111000000000,D4
+00001452  E04C                     355                 LSR      #8,D4
+00001454  E24C                     356                 LSR      #1,D4
+00001456  4EB0 2000                357                 JSR      0(A0,D2)
+0000145A  14BC 0000                358                 MOVE.B   #$0,(A2) *end message (NULL)
+0000145E  4EB8 13A2                359                 JSR      movecheck
+00001462  4E75                     360                 RTS
+00001464                           361                 
+00001464                           362  *---------------------------------------------------------------------
+00001464                           363  *MOVE.W
+00001464                           364  *   A2: MESSAGE
+00001464                           365  *   D3: Original Instruction
+00001464                           366  *---------------------------------------------------------------------
+00001464  14FC 004D                367  code0011       MOVE.B   #$4D,(A2)+
+00001468  14FC 004F                368                 MOVE.B   #$4F,(A2)+
+0000146C  14FC 0056                369                 MOVE.B   #$56,(A2)+
+00001470  14FC 0045                370                 MOVE.B   #$45,(A2)+              *Add "MOVE" to the message
+00001474  1C3C 0001                371                 MOVE.B   #%01,D6                 *Set size flag
+00001478  3803                     372                 MOVE.W   D3,D4
+0000147A  0244 01C0                373                 ANDI.W   #%0000000111000000,D4
+0000147E  EC4C                     374                 LSR      #6,D4
+00001480  4EB9 00002214            375                 JSR      isaddress               *Check if move is movea
+00001486  3403                     376                 MOVE.W   D3,D2                   *Make a copy of the original instruction
+00001488  14FC 002E                377                 MOVE.B   #$2E,(A2)+              *Add ".W  " to the message
+0000148C  14FC 0057                378                 MOVE.B   #$57,(A2)+
+00001490  14FC 0020                379                 MOVE.B   #$20,(A2)+
+00001494  0242 0038                380                 ANDI.W   #%0000000000111000,D2
+00001498  E64A                     381                 LSR      #3,D2                   *Get source mode
+0000149A  C4FC 0006                382                 MULU     #6,D2
+0000149E  3803                     383                 MOVE.W   D3,D4
+000014A0  0244 0007                384                 ANDI.W   #%0000000000000111,D4
+000014A4  41F9 000020D2            385                 LEA      ea_jump,A0              *load jump table
+000014AA  4EB0 2000                386                 JSR      0(A0,D2)                *jump to source mode
+000014AE  14FC 002C                387                 MOVE.B   #$2C,(A2)+
+000014B2  3403                     388                 MOVE.W   D3,D2
+000014B4  0242 01C0                389                 ANDI.W   #%0000000111000000,D2
+000014B8  EC4A                     390                 LSR      #6,D2
+000014BA  C4FC 0006                391                 MULU     #6,D2
+000014BE  3803                     392                 MOVE.W   D3,D4
+000014C0  0244 0E00                393                 ANDI.W   #%0000111000000000,D4
+000014C4  E04C                     394                 LSR      #8,D4
+000014C6  E24C                     395                 LSR      #1,D4
+000014C8  4EB0 2000                396                 JSR      0(A0,D2)
+000014CC  14BC 0000                397                 MOVE.B   #$0,(A2)                *end message(NULL)
+000014D0  4EB8 13A2                398                 JSR      movecheck
+000014D4  4E75                     399                 RTS
+000014D6                           400                 
+000014D6                           401  *---------------------------------------------------------------------
+000014D6                           402  *JSR/RTS/NOP/MOVEM/LEA/NOT
+000014D6                           403  *   A2: Message
+000014D6                           404  *   A4: Current Line
+000014D6                           405  *   D3: Original Instruction
+000014D6                           406  *---------------------------------------------------------------------
+000014D6  B67C 4E75                407  code0100       CMP.W    #%0100111001110101,D3
+000014DA  6700 024A                408                 BEQ      returnsub               *Instruction is RTS
+000014DE  B67C 4E71                409                 CMP.W    #%0100111001110001,D3
+000014E2  6700 0254                410                 BEQ      noop                    *Instruction is NOP
+000014E6  3803                     411                 MOVE.W   D3,D4
+000014E8  E04C                     412                 LSR      #8,D4
+000014EA  E24C                     413                 LSR      #1,D4
+000014EC  0244 0007                414                 ANDI.W   #$0007,D4
+000014F0  B83C 0007                415                 CMP.B    #$07,D4
+000014F4  6700 0254                416                 BEQ      jumpsub                 *Instruction is JSR
+000014F8  B83C 0003                417                 CMP.B    #3,D4
+000014FC  6700 0360                418                 BEQ      _not                    *Instruction is NOT
+00001500  3803                     419                 MOVE.W   D3,D4
+00001502  EC4C                     420                 LSR      #6,D4
+00001504  0244 0007                421                 ANDI.W   #$0007,D4
+00001508  B83C 0007                422                 CMP.B    #$07,D4
+0000150C  6700 02D8                423                 BEQ      loadea                  *Instruction is LEA
+00001510  3803                     424                 MOVE.W   D3,D4
+00001512  EE4C                     425                 LSR      #7,D4
+00001514  0244 0007                426                 ANDI.W   #$0007,D4
+00001518  B83C 0001                427                 CMP.B    #1,D4
+0000151C  6700 0008                428                 BEQ      movemult                *Instruction is MOVEM
+00001520  123C 0001                429                 MOVE.B   #1,D1
+00001524  4E75                     430                 RTS
+00001526                           431                 
+00001526  14FC 004D                432  movemult       MOVE.B   #$4D,(A2)+
+0000152A  14FC 004F                433                 MOVE.B   #$4F,(A2)+
+0000152E  14FC 0056                434                 MOVE.B   #$56,(A2)+
+00001532  14FC 0045                435                 MOVE.B   #$45,(A2)+
+00001536  14FC 004D                436                 MOVE.B   #$4D,(A2)+              *Add "MOVEM" to the message
+0000153A  3803                     437                 MOVE.W   D3,D4
+0000153C  EC4C                     438                 LSR      #6,D4  
+0000153E  0244 0001                439                 ANDI.W   #$0001,D4                
+00001542  4EB9 00001922            440                 JSR      movemsize               *Process the size of MOVEM
+00001548  3803                     441                 MOVE.W   D3,D4
+0000154A  E04C                     442                 LSR      #8,D4
+0000154C  E44C                     443                 LSR      #2,D4
+0000154E  0244 0001                444                 ANDI.W   #$0001,D4
+00001552  B83C 0001                445                 CMP.B    #1,D4                   *Check Direction of themove
+00001556  6700 03EA                446                 BEQ      memtoreg                *Move from memory to register
+0000155A  3803                     447                 MOVE.W   D3,D4                   *A move from registers to mem
+0000155C  E04C                     448                 LSR      #8,D4
+0000155E  E44C                     449                 LSR      #2,D4                   *Get direction of transfer
+00001560  0244 0001                450                 ANDI.W   #$0001,D4
+00001564  B83C 0000                451                 CMP.B    #0,D4
+00001568  6700 0004                452                 BEQ      regtomem                *Moving registers to memory
+0000156C  4E75                     453                 RTS
+0000156E                           454                 
+0000156E  381C                     455  regtomem       MOVE.W   (A4)+,D4                *get the word from the current line
+00001570  4EB9 0000160E            456                 JSR      loopstart               *start the loop
+00001576  153C 002C                457                 MOVE.B   #$2C,-(A2)              *Add "," to the message
+0000157A  14FC 002C                458                 MOVE.B   #$2C,(A2)+
+0000157E  3403                     459                 MOVE.W   D3,D2
+00001580  E64A                     460                 LSR      #3,D2
+00001582  0242 0007                461                 ANDI.W   #$0007,D2               *Get EA mode
+00001586  C4FC 0006                462                 MULU     #6,D2
+0000158A  3803                     463                 MOVE.W   D3,D4
+0000158C  0244 0007                464                 ANDI.W   #$0007,D4               *Get EA register
+00001590  41F9 000020D2            465                 LEA      ea_jump,A0
+00001596  4EB0 2000                466                 JSR      0(A0,D2)                *Process EA
+0000159A  14FC 0000                467                 MOVE.B   #0,(A2)+                *Add the null character to the message
+0000159E  4EB9 000015A6            468                 JSR      regtomemcheck           *check for errors
+000015A4  4E75                     469                 RTS
+000015A6                           470  
+000015A6  3403                     471  regtomemcheck  MOVE.W   D3,D2
+000015A8  E64A                     472                 LSR      #3,D2
+000015AA  0242 0007                473                 ANDI.W   #$0007,D2
+000015AE  B43C 0000                474                 CMP.B    #%000,D2
+000015B2  6700 002C                475                 BEQ      movemerror
+000015B6  B43C 0001                476                 CMP.B    #%001,D2
+000015BA  6700 0024                477                 BEQ      movemerror
+000015BE  B43C 0003                478                 CMP.B    #%011,D2
+000015C2  6700 001C                479                 BEQ      movemerror
+000015C6  3803                     480                 MOVE.W   D3,D4
+000015C8  0244 0007                481                 ANDI.W   #$0007,D4
+000015CC  B43C 0007                482                 CMP.B    #%111,D2
+000015D0  6700 0004                483                 BEQ      movemimm
+000015D4  4E75                     484                 RTS           
+000015D6                           485  
+000015D6  B83C 0004                486  movemimm       CMP.B    #%100,D4
+000015DA  6700 0004                487                 BEQ      movemerror
+000015DE  4E75                     488                 RTS                   
+000015E0                           489   
+000015E0  45F9 00002744            490  movemerror     LEA      message,A2
+000015E6  D4FC 0009                491                 ADDA.W   #9,A2
+000015EA  14FC 004D                492                 MOVE.B   #$4D,(A2)+
+000015EE  14FC 004F                493                 MOVE.B   #$4F,(A2)+
+000015F2  14FC 0056                494                 MOVE.B   #$56,(A2)+
+000015F6  14FC 0045                495                 MOVE.B   #$45,(A2)+
+000015FA  14FC 004D                496                 MOVE.B   #$4D,(A2)+
+000015FE  14FC 0020                497                 MOVE.B   #$20,(A2)+
+00001602  4EB9 00002460            498                 JSR      invalidmsg
+00001608  123C 0002                499                 MOVE.B   #2,D1
+0000160C  4E75                     500                 RTS
+0000160E                           501                 
+0000160E                           502                
+0000160E  3F04                     503  loopstart      MOVE.W   D4,-(SP)                *Save the word in the stack
+00001610  1C3C 0000                504                 MOVE.B   #0,D6                   *Start the counter for decrement loop
+00001614  3403                     505                 MOVE.W   D3,D2
+00001616  E64A                     506                 LSR      #3,D2
+00001618  0242 0007                507                 ANDI.W   #$0007,D2
+0000161C  B43C 0004                508                 CMP.B    #%100,D2
+00001620  6700 0084                509                 BEQ      movemdecrLoopD           *Start the pre decrement loop
+00001624  1C3C 0008                510                 MOVE.B   #8,D6                    *Otherwise, start counter for other loop
+00001628  4EF9 0000162E            511                 JMP      movemLoopA               *Start other loop
+0000162E                           512                 
+0000162E  BC3C 0000                513  movemLoopA     CMP.B    #0,D6
+00001632  6700 0030                514                 BEQ      loopAdone                *Processed the address registers
+00001636  5306                     515                 SUB.B    #1,D6                    *Otherwise, decrement counter
+00001638  E04C                     516                 LSR      #8,D4
+0000163A  EE4C                     517                 LSR      #7,D4                    *Get the most significant bit
+0000163C  B87C 0001                518                 CMP.W    #$1,D4
+00001640  6700 000A                519                 BEQ      movemAtrue               *Bit is on
+00001644  3817                     520                 MOVE.W   (SP),D4                  *Get original word from stack
+00001646  E35C                     521                 ROL.W    #1,D4                    *Rotate word to put next bit is MSB
+00001648  3E84                     522                 MOVE.W   D4,(SP)                  *Save word onto the stack again
+0000164A  60E2                     523                 BRA      movemLoopA               *Go back to loop
+0000164C                           524  
+0000164C  1806                     525  movemAtrue     MOVE.B   D6,D4                    *Current number in the list
+0000164E  14FC 0041                526                 MOVE.B   #$41,(A2)+               *Add "A" to the message
+00001652  4EB9 000021FC            527                 JSR      hextoasc                 *Process register number
+00001658  14FC 002F                528                 MOVE.B   #$2F,(A2)+               *Add "/" to the message
+0000165C  3817                     529                 MOVE.W   (SP),D4                  *Get the original word
+0000165E  E35C                     530                 ROL.W    #1,D4                    *Rotate word to put next bit in MSB
+00001660  3E84                     531                 MOVE.W   D4,(SP)                  *Save the word onto the stack
+00001662  60CA                     532                 BRA      movemLoopA               *go back to loop   
+00001664                           533  
+00001664  1C3C 0008                534  loopAdone      MOVE.B   #8,D6                    *Reset counter
+00001668  6000 0002                535                 BRA      movemLoopD               *Start the next loop        
+0000166C                           536                 
+0000166C  BC3C 0000                537  movemLoopD     CMP.B    #0,D6                    *Process data registers
+00001670  6700 0030                538                 BEQ      loopDdone                *Similar to movemLoopA
+00001674  5306                     539                 SUB.B    #1,D6
+00001676  E04C                     540                 LSR      #8,D4
+00001678  EE4C                     541                 LSR      #7,D4
+0000167A  B87C 0001                542                 CMP.W    #$1,D4
+0000167E  6700 000A                543                 BEQ      movemDtrue
+00001682  3817                     544                 MOVE.W   (SP),D4
+00001684  E35C                     545                 ROL.W    #1,D4
+00001686  3E84                     546                 MOVE.W   D4,(SP)
+00001688  60E2                     547                 BRA      movemLoopD
+0000168A                           548                 
+0000168A  14FC 0044                549  movemDtrue     MOVE.B   #$44,(A2)+               *Add "D" to the message
+0000168E  1806                     550                 MOVE.B   D6,D4
+00001690  4EB9 000021FC            551                 JSR      hextoasc
+00001696  14FC 002F                552                 MOVE.B   #$2F,(A2)+
+0000169A  3817                     553                 MOVE.W   (SP),D4
+0000169C  E35C                     554                 ROL.W    #1,D4
+0000169E  3E84                     555                 MOVE.W   D4,(SP)
+000016A0  60CA                     556                 BRA      movemLoopD
+000016A2                           557  
+000016A2  381F                     558  loopDdone      MOVE.W   (SP)+,D4                *reset stack
+000016A4  4E75                     559                 RTS                              *didn't do A2+ since the null character might need to be overwritten
+000016A6                           560                 
+000016A6  BC3C 0008                561  movemdecrLoopD CMP.B    #8,D6                   *Check if the loop is done
+000016AA  6700 0034                562                 BEQ      decrDdone               *loop is done
+000016AE  3817                     563                 MOVE.W   (SP),D4                 *Get the word from the stack
+000016B0  E04C                     564                 LSR      #8,D4
+000016B2  EE4C                     565                 LSR      #7,D4                   *Get MSB
+000016B4  B87C 0001                566                 CMP.W    #$1,D4
+000016B8  6700 000C                567                 BEQ      decrDtrue               *Bit is on
+000016BC  3817                     568                 MOVE.W   (SP),D4                 *get word from stack
+000016BE  E35C                     569                 ROL.W    #1,D4                   *rotate by 1 to get next MSB
+000016C0  3E84                     570                 MOVE.W   D4,(SP)                 *Save word to stack
+000016C2  5206                     571                 ADD.B    #1,D6                   *Increase counter
+000016C4  60E0                     572                 BRA      movemdecrLoopD          *enter loop again
+000016C6                           573                 
+000016C6  14FC 0044                574  decrDtrue      MOVE.B   #$44,(A2)+              *Add "D" to the message
+000016CA  1806                     575                 MOVE.B   D6,D4
+000016CC  4EB9 000021FC            576                 JSR      hextoasc                *Process the current register
+000016D2  14FC 002F                577                 MOVE.B   #$2F,(A2)+
+000016D6  3817                     578                 MOVE.W   (SP),D4                 *Get word from stack
+000016D8  E35C                     579                 ROL.W    #1,D4                   *Rotate to get next MSB
+000016DA  3E84                     580                 MOVE.W   D4,(SP)                 *Save word back to stack
+000016DC  5206                     581                 ADD.B    #1,D6                   *Increase Counter
+000016DE  60C6                     582                 BRA      movemdecrLoopD          *go back to loop
+000016E0                           583  
+000016E0  1C3C 0000                584  decrDdone      MOVE.B   #0,D6                   *Reset the counter
+000016E4  6000 0002                585                 BRA      decrLoopA               *Start next loop  
+000016E8                           586  
+000016E8  BC3C 0008                587  decrLoopA      CMP.B    #8,D6
+000016EC  6700 0034                588                 BEQ      decrAdone               *similar to movemdecrLoopD             
+000016F0  3817                     589                 MOVE.W   (SP),D4
+000016F2  E04C                     590                 LSR      #8,D4
+000016F4  EE4C                     591                 LSR      #7,D4
+000016F6  B87C 0001                592                 CMP.W    #$1,D4
+000016FA  6700 000C                593                 BEQ      decrAtrue
+000016FE  3817                     594                 MOVE.W   (SP),D4
+00001700  E35C                     595                 ROL.W    #1,D4
+00001702  3E84                     596                 MOVE.W   D4,(SP)
+00001704  5206                     597                 ADD.B    #1,D6
+00001706  60E0                     598                 BRA      decrLoopA
+00001708                           599  
+00001708  14FC 0041                600  decrAtrue      MOVE.B   #$41,(A2)+              *Add "A" to the message
+0000170C  1806                     601                 MOVE.B   D6,D4
+0000170E  4EB9 000021FC            602                 JSR      hextoasc                *Process the register number
+00001714  14FC 002F                603                 MOVE.B   #$2F,(A2)+
+00001718  3817                     604                 MOVE.W   (SP),D4
+0000171A  E35C                     605                 ROL.W    #1,D4
+0000171C  3E84                     606                 MOVE.W   D4,(SP)
+0000171E  5206                     607                 ADD.B    #1,D6
+00001720  60C6                     608                 BRA      decrLoopA
+00001722                           609  
+00001722  381F                     610  decrAdone      MOVE.W   (SP)+,D4
+00001724  4E75                     611                 RTS            
+00001726                           612              
+00001726  14FC 0052                613  returnsub      MOVE.B   #$52,(A2)+
+0000172A  14FC 0054                614                 MOVE.B   #$54,(A2)+
+0000172E  14FC 0053                615                 MOVE.B   #$53,(A2)+              *Add "RTS" to the message
+00001732  14FC 0000                616                 MOVE.B   #$0,(A2)+               *Add null character
+00001736  4E75                     617                 RTS
+00001738                           618  
+00001738  14FC 004E                619  noop           MOVE.B   #$4E,(A2)+
+0000173C  14FC 004F                620                 MOVE.B   #$4F,(A2)+
+00001740  14FC 0050                621                 MOVE.B   #$50,(A2)+              *Add "NOP" to the message
+00001744  14FC 0000                622                 MOVE.B   #$0,(A2)+               *Add null character
+00001748  4E75                     623                 RTS
+0000174A                           624  
+0000174A  14FC 004A                625  jumpsub        MOVE.B   #$4A,(A2)+
+0000174E  14FC 0053                626                 MOVE.B   #$53,(A2)+
+00001752  14FC 0052                627                 MOVE.B   #$52,(A2)+              *Add "JSR" to the message
+00001756  14FC 0020                628                 MOVE.B   #$20,(A2)+              *Add "  " to the message
+0000175A  3403                     629                 MOVE.W   D3,D2               
+0000175C  3803                     630                 MOVE.W   D3,D4
+0000175E  E64A                     631                 LSR      #3,D2
+00001760  0242 0007                632                 ANDI.W   #$0007,D2               *Get EA mode
+00001764  0244 0007                633                 ANDI.W   #$0007,D4               *Get Register
+00001768  4EB9 00001782            634                 JSR      jsrcheck                *Check for invalid EA
+0000176E  C4FC 0006                635                 MULU     #6,D2
+00001772  41F9 000020D2            636                 LEA      ea_jump,A0
+00001778  4EB0 2000                637                 JSR      0(A0,D2)                *Process the EA
+0000177C  14FC 0000                638                 MOVE.B   #$0,(A2)+               *Add null character
+00001780  4E75                     639                 RTS
+00001782                           640  
+00001782  B43C 0000                641  jsrcheck       CMP.B    #%000,D2
+00001786  6700 002E                642                 BEQ      jsrerror
+0000178A  B43C 0001                643                 CMP.B    #%001,D2
+0000178E  6700 0026                644                 BEQ      jsrerror
+00001792  B43C 0003                645                 CMP.B    #%011,D2
+00001796  6700 001E                646                 BEQ      jsrerror
+0000179A  B43C 0004                647                 CMP.B    #%100,D2
+0000179E  6700 0016                648                 BEQ      jsrerror
+000017A2  B43C 0007                649                 CMP.B    #%111,D2
+000017A6  6700 0004                650                 BEQ      jsrimm                *Check if the ea is immediate
+000017AA  4E75                     651                 RTS                              *No Error
+000017AC                           652                 
+000017AC  B83C 0004                653  jsrimm         CMP.B    #%100,D4
+000017B0  6700 0004                654                 BEQ      jsrerror
+000017B4  4E75                     655                 RTS               
+000017B6                           656                 
+000017B6  45F9 00002744            657  jsrerror       LEA      message,A2
+000017BC  D4FC 0009                658                 ADDA.W   #9,A2
+000017C0  14FC 004A                659                 MOVE.B   #$4A,(A2)+
+000017C4  14FC 0053                660                 MOVE.B   #$53,(A2)+
+000017C8  14FC 0052                661                 MOVE.B   #$52,(A2)+
+000017CC  14FC 0020                662                 MOVE.B   #$20,(A2)+
+000017D0  123C 0002                663                 MOVE.B   #2,D1
+000017D4  4EB9 00002460            664                 JSR      invalidmsg
+000017DA  4E75                     665                 RTS               
+000017DC                           666                 
+000017DC  B83C 0004                667  checkimm       CMP.B    #%100,D4
+000017E0  6700 0C2C                668                 BEQ      seterror                *Immediate addressing (Invalid)
+000017E4  4E75                     669                 RTS                              *absolute addressing (Valid)               
+000017E6                           670  
+000017E6  14FC 004C                671  loadea         MOVE.B   #$4C,(A2)+
+000017EA  14FC 0045                672                 MOVE.B   #$45,(A2)+
+000017EE  14FC 0041                673                 MOVE.B   #$41,(A2)+              *Add "LEA" to the message
+000017F2  14FC 0020                674                 MOVE.B   #$20,(A2)+              *Add " " to the message
+000017F6  3403                     675                 MOVE.W   D3,D2
+000017F8  3803                     676                 MOVE.W   D3,D4
+000017FA  0244 0007                677                 ANDI.W   #$0007,D4               *Get register
+000017FE  E64A                     678                 LSR      #3,D2
+00001800  0242 0007                679                 ANDI.W   #$0007,D2               *Get EA mode
+00001804  4EB9 00001836            680                 JSR      leacheck                *Check for invalid EA
+0000180A  C4FC 0006                681                 MULU     #6,D2
+0000180E  41F9 000020D2            682                 LEA      ea_jump,A0
+00001814  4EB0 2000                683                 JSR      0(A0,D2)                *Jump to the proper EA Code
+00001818  14FC 002C                684                 MOVE.B   #$2C,(A2)+              *Add "," to the message
+0000181C  14FC 0041                685                 MOVE.B   #$41,(A2)+              *Add "A" to the message
+00001820  3803                     686                 MOVE.W   D3,D4
+00001822  E04C                     687                 LSR      #8,D4
+00001824  E24C                     688                 LSR      #1,D4
+00001826  0244 0007                689                 ANDI.W   #$0007,D4
+0000182A  4EB9 000021FC            690                 JSR      hextoasc                *Process the register
+00001830  14FC 0000                691                 MOVE.B   #$0,(A2)+               *Add null character
+00001834  4E75                     692                 RTS
+00001836                           693  
+00001836  B43C 0000                694  leacheck       CMP.B    #%000,D2
+0000183A  6700 0BD2                695                 BEQ      seterror
+0000183E  B43C 0001                696                 CMP.B    #%001,D2
+00001842  6700 0BCA                697                 BEQ      seterror
+00001846  B43C 0003                698                 CMP.B    #%011,D2
+0000184A  6700 0BC2                699                 BEQ      seterror
+0000184E  B43C 0004                700                 CMP.B    #%100,D2
+00001852  6700 0BBA                701                 BEQ      seterror
+00001856  B43C 0007                702                 CMP.B    #%111,D2
+0000185A  6780                     703                 BEQ      checkimm                *Check if the ea is immediate
+0000185C  4E75                     704                 RTS                              *No Error
+0000185E                           705  
+0000185E  14FC 004E                706  _not           MOVE.B   #$4E,(A2)+
+00001862  14FC 004F                707                 MOVE.B   #$4F,(A2)+
+00001866  14FC 0054                708                 MOVE.B   #$54,(A2)+              *Add "NOT" to the message
+0000186A  3803                     709                 MOVE.W   D3,D4
+0000186C  EC4C                     710                 LSR      #6,D4
+0000186E  0244 0003                711                 ANDI.W   #$0003,D4
+00001872  4EB9 000018E2            712                 JSR      notsize                 *Process the size
+00001878  3403                     713                 MOVE.W   D3,D2
+0000187A  E64A                     714                 LSR      #3,D2
+0000187C  0242 0007                715                 ANDI.W   #$0007,D2               *Get EA mode
+00001880  3803                     716                 MOVE.W   D3,D4
+00001882  0244 0007                717                 ANDI.W   #$0007,D4               *Get Register
+00001886  4EB9 000018A0            718                 JSR      notcheck                *Check for invalid EAs
+0000188C  C4FC 0006                719                 MULU     #6,D2
+00001890  41F9 000020D2            720                 LEA      ea_jump,A0
+00001896  4EB0 2000                721                 JSR      0(A0,D2)
+0000189A  14FC 0000                722                 MOVE.B   #$0,(A2)+               *Add null character to the message
+0000189E  4E75                     723                 RTS
+000018A0                           724                 
+000018A0  B43C 0001                725  notcheck       CMP.B    #%001,D2
+000018A4  6700 0016                726                 BEQ      noterror
+000018A8  B43C 0007                727                 CMP.B    #%111,D2
+000018AC  6700 0004                728                 BEQ      notimm
+000018B0  4E75                     729                 RTS
+000018B2                           730                 
+000018B2  B83C 0004                731  notimm         CMP.B    #%100,D4
+000018B6  6700 0004                732                 BEQ      noterror
+000018BA  4E75                     733                 RTS               
+000018BC                           734                 
+000018BC  45F9 00002744            735  noterror       LEA      message,A2
+000018C2  D4FC 0009                736                 ADDA.W   #9,A2
+000018C6  14FC 004E                737                 MOVE.B   #$4E,(A2)+
+000018CA  14FC 004F                738                 MOVE.B   #$4F,(A2)+
+000018CE  14FC 0054                739                 MOVE.B   #$54,(A2)+
+000018D2  14FC 0020                740                 MOVE.B   #$20,(A2)+
+000018D6  4EB9 00002460            741                 JSR      invalidmsg
+000018DC  123C 0002                742                 MOVE.B   #2,D1
+000018E0  4E75                     743                 RTS               
+000018E2                           744  
+000018E2  14FC 002E                745  notsize        MOVE.B   #$2E,(A2)+              *Add "." to the message
+000018E6  B83C 0000                746                 CMP.B    #0,D4
+000018EA  6700 0018                747                 BEQ      notbyte
+000018EE  B83C 0001                748                 CMP.B    #1,D4
+000018F2  6700 001A                749                 BEQ      notword
+000018F6  B83C 0002                750                 CMP.B    #2,D4
+000018FA  6700 001C                751                 BEQ      notlong
+000018FE  123C 0001                752                 MOVE.B   #1,D1
+00001902  4E75                     753                 RTS
+00001904                           754                 
+00001904  14FC 0042                755  notbyte        MOVE.B   #$42,(A2)+              
+00001908  14FC 0020                756                 MOVE.B   #$20,(A2)+              *Add "B  " to the message
+0000190C  4E75                     757                 RTS
+0000190E                           758                 
+0000190E  14FC 0057                759  notword        MOVE.B   #$57,(A2)+
+00001912  14FC 0020                760                 MOVE.B   #$20,(A2)+              *Add "L  " to the message
+00001916  4E75                     761                 RTS                              
+00001918                           762  
+00001918  14FC 004C                763  notlong        MOVE.B   #$4C,(A2)+
+0000191C  14FC 0020                764                 MOVE.B   #$20,(A2)+              *Add "L  " to the message
+00001920  4E75                     765                 RTS       
+00001922                           766  
+00001922  14FC 002E                767  movemsize      MOVE.B   #$2E,(A2)+
+00001926  B83C 0000                768                 CMP.B    #0,D4
+0000192A  6700 000C                769                 BEQ      wordmovem
+0000192E  14FC 004C                770                 MOVE.B   #$4C,(A2)+              *Size is long
+00001932  14FC 0020                771                 MOVE.B   #$20,(A2)+              *Add ".L  " to the message
+00001936  4E75                     772                 RTS
+00001938                           773  
+00001938  14FC 0057                774  wordmovem      MOVE.B   #$57,(A2)+
+0000193C  14FC 0020                775                 MOVE.B   #$20,(A2)+              *Add ".W  " to the message
+00001940  4E75                     776                 RTS                              
+00001942                           777  
+00001942  3403                     778  memtoreg       MOVE.W   D3,D2                   *Otherwise, mem to registers
+00001944  3F1C                     779                 MOVE.W   (A4)+,-(SP)             *Get register mask
+00001946  E64A                     780                 LSR      #3,D2
+00001948  0242 0007                781                 ANDI.W   #$0007,D2               *get the ea mode
+0000194C  C4FC 0006                782                 MULU     #6,D2
+00001950  3803                     783                 MOVE.W   D3,D4
+00001952  0244 0007                784                 ANDI.W   #$0007,D4               *get the register
+00001956  41F9 000020D2            785                 LEA      ea_jump,A0
+0000195C  4EB0 2000                786                 JSR      0(A0,D2)                *Process the EA
+00001960  14FC 002C                787                 MOVE.B   #$2C,(A2)+              *Add "," to the message
+00001964  381F                     788                 MOVE.W   (SP)+,D4                *Get the word from the stack
+00001966  4EB8 160E                789                 JSR      loopstart               *start the loop
+0000196A  153C 0000                790                 MOVE.B   #0,-(A2)                *Add the null character to the message
+0000196E  4EB9 00001976            791                 JSR      memtoregcheck
+00001974  4E75                     792                 RTS
+00001976                           793                 
+00001976  3403                     794  memtoregcheck  MOVE.W   D3,D2
+00001978  E64A                     795                 LSR      #3,D2
+0000197A  0242 0007                796                 ANDI.W   #$0007,D2
+0000197E  B43C 0000                797                 CMP.B    #%000,D2
+00001982  6700 FC5C                798                 BEQ      movemerror
+00001986  B43C 0001                799                 CMP.B    #%001,D2
+0000198A  6700 FC54                800                 BEQ      movemerror
+0000198E  B43C 0004                801                 CMP.B    #%100,D2
+00001992  6700 FC4C                802                 BEQ      movemerror
+00001996  3803                     803                 MOVE.W   D3,D4
+00001998  0244 0007                804                 ANDI.W   #$0007,D4
+0000199C  B43C 0007                805                 CMP.B    #%111,D2
+000019A0  6700 FC34                806                 BEQ      movemimm                *Check for immediate data
+000019A4  4E75                     807                 RTS                              *Valid     
+000019A6                           808  
+000019A6                           809       
+000019A6                           810  
+000019A6                           811  *---------------------------------------------------------------------
+000019A6                           812  *ADDQ
+000019A6                           813  *   A2: Message
+000019A6                           814  *   D3: Original Instruction
+000019A6                           815  *---------------------------------------------------------------------
+000019A6  14FC 0041                816  code0101      MOVE.B    #$41,(A2)+
+000019AA  14FC 0044                817                MOVE.B    #$44,(A2)+
+000019AE  14FC 0044                818                MOVE.B    #$44,(A2)+
+000019B2  14FC 0051                819                MOVE.B    #$51,(A2)+              *Add "ADDQ" to message
+000019B6  3803                     820                MOVE.W    D3,D4                   *Make a copy of original
+000019B8  EC4C                     821                LSR       #6,D4
+000019BA  0244 0003                822                ANDI.W    #%0000000000000011,D4
+000019BE  4EB9 00002352            823                JSR       addqsize                *Subroutine to process size
+000019C4  14FC 0020                824                MOVE.B    #$20,(A2)+              *Add "  "to message
+000019C8  3803                     825                MOVE.W    D3,D4
+000019CA  E04C                     826                LSR       #8,D4
+000019CC  E24C                     827                LSR       #1,D4
+000019CE  0244 0007                828                ANDI.W    #%0000000000000111,D4
+000019D2  14FC 0023                829                MOVE.B    #$23,(A2)+
+000019D6  14FC 0024                830                MOVE.B    #$24,(A2)+              *Add "#$" to message
+000019DA  4EB9 000021FC            831                JSR       hextoasc                *Process data
+000019E0  14FC 002C                832                MOVE.B    #$2C,(A2)+              *Add "," to message
+000019E4  3403                     833                MOVE.W    D3,D2
+000019E6  E64A                     834                LSR       #3,D2
+000019E8  0242 0007                835                ANDI.W    #%0000000000000111,D2
+000019EC  C4FC 0006                836                MULU      #6,D2
+000019F0  3803                     837                MOVE.W    D3,D4
+000019F2  0244 0007                838                ANDI.W    #%0000000000000111,D4
+000019F6  41F9 000020D2            839                LEA       ea_jump,A0
+000019FC  4EB0 2000                840                JSR       0(A0,D2)                *Process destination EA
+00001A00  14FC 0000                841                MOVE.B    #$00,(A2)+              *Add null characters
+00001A04  4EB9 00001A0C            842                JSR       addqerrorcheck
+00001A0A  4E75                     843                RTS
+00001A0C                           844                
+00001A0C  3803                     845  addqerrorcheck MOVE.W   D3,D4
+00001A0E  EC4C                     846                LSR       #6,D4
+00001A10  0244 0003                847                ANDI.W    #$0003,D4
+00001A14  B83C 0003                848                CMP.B     #%11,D4
+00001A18  6700 09F4                849                BEQ       seterror                *Invalid size
+00001A1C  3403                     850                MOVE.W    D3,D2
+00001A1E  E64A                     851                LSR       #3,D2                   *Get ea
+00001A20  0242 0007                852                ANDI.W    #$0007,D2
+00001A24  3803                     853                MOVE.W    D3,D4
+00001A26  0244 0007                854                ANDI.W    #$0007,D4               *get register
+00001A2A  B43C 0007                855                CMP.B     #%111,D2
+00001A2E  6700 0004                856                BEQ       addqimm                *Check for immediate addressing
+00001A32  4E75                     857                RTS                               *Valid
+00001A34                           858                
+00001A34  B83C 0004                859  addqimm       CMP.B     #%100,D4
+00001A38  6700 0004                860                BEQ       addqerror
+00001A3C  4E75                     861                RTS              
+00001A3E                           862  
+00001A3E  45F9 00002744            863  addqerror     LEA       message,A2
+00001A44  D4FC 0009                864                ADDA.W    #9,A2
+00001A48  14FC 0041                865                MOVE.B    #$41,(A2)+
+00001A4C  14FC 0044                866                MOVE.B    #$44,(A2)+
+00001A50  14FC 0044                867                MOVE.B    #$44,(A2)+
+00001A54  14FC 0051                868                MOVE.B    #$51,(A2)+
+00001A58  14FC 0020                869                MOVE.B    #$20,(A2)+
+00001A5C  4EB9 00002460            870                JSR       invalidmsg
+00001A62  123C 0002                871                MOVE.B    #2,D1
+00001A66  4E75                     872                RTS
+00001A68                           873  
+00001A68                           874  *---------------------------------------------------------------------
+00001A68                           875  *Bcc (BGT,BLE,BEQ,BRA)
+00001A68                           876  *   A2: Message
+00001A68                           877  *   A4: Next Line
+00001A68                           878  *   A5: Current Instruction
+00001A68                           879  *   D3: Original Instruction
+00001A68                           880  *---------------------------------------------------------------------
+00001A68  14FC 0042                881  code0110      MOVE.B   #$42,(A2)+
+00001A6C  3803                     882                MOVE.W   D3,D4
+00001A6E  E04C                     883                LSR      #8,D4
+00001A70  0244 000F                884                ANDI.W   #$000F,D4
+00001A74  4EB9 0000238E            885                JSR      proccondition            *Process the conditional
+00001A7A  14FC 0020                886                MOVE.B   #$20,(A2)+
+00001A7E  3803                     887                MOVE.W   D3,D4
+00001A80  0244 00FF                888                ANDI.W   #$00FF,D4
+00001A84  B87C 00FF                889                CMP.W    #$FF,D4                  *32 bit displacement
+00001A88  6700 0012                890                BEQ      bit32
+00001A8C  B87C 0000                891                CMP.W    #$00,D4
+00001A90  6700 0012                892                BEQ      bit16                    *16 bit displacement
+00001A94  4EB9 00001AAC            893                JSR      procdisplace             *Process 8 bit displacement
+00001A9A  4E75                     894                RTS
+00001A9C                           895  
+00001A9C  281C                     896  bit32         MOVE.L    (A4)+,D4                *Get long displacement
+00001A9E  4EF9 00001AAC            897                JMP       procdisplace            *process the displacement
+00001AA4                           898  
+00001AA4  381C                     899  bit16         MOVE.W    (A4)+,D4                *Get the word displacement
+00001AA6  4EF9 00001AAC            900                JMP       procdisplace            *Process the displacement
+00001AAC                           901  
+00001AAC  D88D                     902  procdisplace  ADD.L     A5,D4                   *Add displacement to the current address
+00001AAE  3F04                     903                MOVE.W    D4,-(SP)                *Save the lower word into the stack
+00001AB0  E08C                     904                LSR.L     #8,D4
+00001AB2  E08C                     905                LSR.L     #8,D4                   *Get the high order word
+00001AB4  14FC 0024                906                MOVE.B    #$24,(A2)+              *Add "$" to the message
+00001AB8  4EB9 000023DC            907                JSR       wordtoasc               *Process the high order word
+00001ABE  381F                     908                MOVE.W    (SP)+,D4                *Get the low order word
+00001AC0  4EB9 000023DC            909                JSR       wordtoasc               *Process the low order word
+00001AC6  14FC 0000                910                MOVE.B    #0,(A2)+
+00001ACA  4E75                     911                RTS
+00001ACC                           912  *---------------------------------------------------------------------
+00001ACC                           913  *MOVEQ
+00001ACC                           914  *   A2: Message
+00001ACC                           915  *   D3: Original Instruction
+00001ACC                           916  *---------------------------------------------------------------------
+00001ACC  14FC 004D                917  code0111       MOVE.B   #$4D,(A2)+
+00001AD0  14FC 004F                918                 MOVE.B   #$4F,(A2)+
+00001AD4  14FC 0056                919                 MOVE.B   #$56,(A2)+
+00001AD8  14FC 0045                920                 MOVE.B   #$45,(A2)+              *Add "MOVE" to the message
+00001ADC  14FC 0051                921                 MOVE.B   #$51,(A2)+              *Add "Q" to the message      
+00001AE0  14FC 0020                922                 MOVE.B   #$20,(A2)+              *Add "  " to the message
+00001AE4  14FC 0023                923                 MOVE.B   #$23,(A2)+              *Add "#" to the message
+00001AE8  14FC 0024                924                 MOVE.B   #$24,(A2)+              *Add "$" to the  message
+00001AEC  3803                     925                 MOVE.W   D3,D4
+00001AEE  E84C                     926                 LSR      #4,D4
+00001AF0  0244 000F                927                 ANDI.W   #%0000000000001111,D4
+00001AF4  4EB9 000021FC            928                 JSR      hextoasc                *Process the first hex digit
+00001AFA  3803                     929                 MOVE.W   D3,D4
+00001AFC  0244 000F                930                 ANDI.W   #%0000000000001111,D4
+00001B00  4EB9 000021FC            931                 JSR      hextoasc                *Process the second hex digit
+00001B06  14FC 002C                932                 MOVE.B   #$2C,(A2)+              *Add "," to the message
+00001B0A  14FC 0044                933                 MOVE.B   #$44,(A2)+              *Add "D" to the message
+00001B0E  3803                     934                 MOVE.W   D3,D4
+00001B10  E04C                     935                 LSR      #8,D4
+00001B12  E24C                     936                 LSR      #1,D4
+00001B14  0244 0007                937                 ANDI.W   #%0000000000000111,D4
+00001B18  4EB9 000021FC            938                 JSR      hextoasc                *Process the data register
+00001B1E  14FC 0000                939                 MOVE.B   #$0,(A2)+
+00001B22  4E75                     940                 RTS
+00001B24                           941  
+00001B24                           942  *---------------------------------------------------------------------
+00001B24                           943  *OR
+00001B24                           944  *   A2: Message
+00001B24                           945  *   D3: Original Instruction
+00001B24                           946  *---------------------------------------------------------------------
+00001B24  14FC 004F                947  code1000       MOVE.B   #$4F,(A2)+
+00001B28  14FC 0052                948                 MOVE.B   #$52,(A2)+
+00001B2C  3803                     949                 MOVE.W   D3,D4
+00001B2E  EC4C                     950                 LSR      #6,D4
+00001B30  0244 0007                951                 ANDI.W   #$0007,D4
+00001B34  4EB9 00002224            952                 JSR      addsize
+00001B3A  14FC 0020                953                 MOVE.B   #$20,(A2)+
+00001B3E  4245                     954                 CLR      D5                      *Clear the "ADDA" flag (in case it's set)
+00001B40  4EB9 000022A4            955                 JSR      addaddresses
+00001B46  4EB9 00001B52            956                 JSR      orerrorcheck
+00001B4C  14FC 0000                957                 MOVE.B   #$0,(A2)+
+00001B50  4E75                     958                 RTS                          
+00001B52                           959  
+00001B52  3803                     960  orerrorcheck   MOVE.W   D3,D4
+00001B54  EC4C                     961                 LSR      #6,D4
+00001B56  0244 0007                962                 ANDI.W   #$0007,D4
+00001B5A  B83C 0003                963                 CMP.B    #%011,D4
+00001B5E  6700 08AE                964                 BEQ      seterror
+00001B62  B83C 0007                965                 CMP.B    #%111,D4
+00001B66  6700 08A6                966                 BEQ      seterror                *Invalid Sizes
+00001B6A  3403                     967                 MOVE.W   D3,D2
+00001B6C  E64A                     968                 LSR      #3,D2
+00001B6E  0242 0007                969                 ANDI.W   #$0007,D2               *Get EA
+00001B72  B83C 0003                970                 CMP.B    #%011,D4
+00001B76  6E00 000C                971                 BGT      ordestcheck             *check for destination errors
+00001B7A  B43C 0001                972                 CMP.B    #%001,D2                *check for source errors
+00001B7E  6700 088E                973                 BEQ      seterror
+00001B82  4E75                     974                 RTS                              *Valid EA
+00001B84                           975                 
+00001B84  B43C 0001                976  ordestcheck    CMP.B    #%001,D2
+00001B88  6700 0024                977                 BEQ      orerr                   *Invalid EA
+00001B8C  B43C 0000                978                 CMP.B    #%000,D2
+00001B90  6700 001C                979                 BEQ      orerr                   *Invalid EA
+00001B94  3803                     980                 MOVE.W   D3,D4
+00001B96  0244 0007                981                 ANDI.W   #$0007,D4               *get register
+00001B9A  B43C 0007                982                 CMP.B    #%111,D2
+00001B9E  6700 0004                983                 BEQ      orimm
+00001BA2  4E75                     984                 RTS                              *Valid EA
+00001BA4                           985                 
+00001BA4  B83C 0004                986  orimm          CMP.B    #%100,D4                *Check for immediate addressing
+00001BA8  6700 0004                987                 BEQ      orerr                   *Invalid EA
+00001BAC  4E75                     988                 RTS               
+00001BAE                           989                 
+00001BAE  45F9 00002744            990  orerr          LEA      message,A2              *Load message again
+00001BB4  D4FC 0009                991                 ADDA.W   #9,A2                   *Move to after the address section
+00001BB8  14FC 004F                992                 MOVE.B   #$4F,(A2)+
+00001BBC  14FC 0052                993                 MOVE.B   #$52,(A2)+              *Move "OR" to the message again
+00001BC0  14FC 0020                994                 MOVE.B   #$20,(A2)+
+00001BC4  4EB9 00002460            995                 JSR      invalidmsg
+00001BCA  123C 0002                996                 MOVE.B   #$2,D1                  *EA flag
+00001BCE  4E75                     997                 RTS
+00001BD0                           998                  
+00001BD0                           999  *---------------------------------------------------------------------
+00001BD0                          1000  *SUB
+00001BD0                          1001  *   A2: Message
+00001BD0                          1002  *   D3: Original Instruction
+00001BD0                          1003  *---------------------------------------------------------------------
+00001BD0  14FC 0053               1004  code1001       MOVE.B   #$53,(A2)+
+00001BD4  14FC 0055               1005                 MOVE.B   #$55,(A2)+
+00001BD8  14FC 0042               1006                 MOVE.B   #$42,(A2)+              *Add "SUB" to the message
+00001BDC  3803                    1007                 MOVE.W   D3,D4
+00001BDE  EC4C                    1008                 LSR      #6,D4
+00001BE0  0244 0007               1009                 ANDI.W   #$0007,D4
+00001BE4  4EB9 00002224           1010                 JSR      addsize
+00001BEA  14FC 0020               1011                 MOVE.B   #$20,(A2)+
+00001BEE  4245                    1012                 CLR      D5                      *Clear the "ADDA" flag (in case it's set)
+00001BF0  4EB9 000022A4           1013                 JSR      addaddresses            *Process addresses
+00001BF6  4EB9 00001C02           1014                 JSR      suberrorcheck           *check for errors
+00001BFC  14FC 0000               1015                 MOVE.B   #$0,(A2)+           
+00001C00  4E75                    1016                 RTS
+00001C02                          1017  
+00001C02  3803                    1018  suberrorcheck  MOVE.W   D3,D4
+00001C04  EC4C                    1019                 LSR      #6,D4
+00001C06  0244 0007               1020                 ANDI.W   #$0007,D4
+00001C0A  B83C 0007               1021                 CMP.B    #%111,D4
+00001C0E  6700 07FE               1022                 BEQ      seterror
+00001C12  B83C 0003               1023                 CMP.B    #%011,D4
+00001C16  6700 07F6               1024                 BEQ      seterror                *Invalid sizes
+00001C1A  B83C 0003               1025                 CMP.B    #%011,D4
+00001C1E  6E00 0004               1026                 BGT      subdestcheck            *Destination error check
+00001C22  4E75                    1027                 RTS                              *All ea valid for source
+00001C24                          1028                 
+00001C24  3403                    1029  subdestcheck   MOVE.W   D3,D2
+00001C26  E64A                    1030                 LSR      #3,D2                   *Get EA mode
+00001C28  B43C 0000               1031                 CMP.B    #%000,D2
+00001C2C  6700 0024               1032                 BEQ      suberror
+00001C30  B43C 0001               1033                 CMP.B    #%001,D2
+00001C34  6700 001C               1034                 BEQ      suberror
+00001C38  3803                    1035                 MOVE.W   D3,D4
+00001C3A  0244 0007               1036                 ANDI.W   #$0007,D4               *get Register
+00001C3E  B43C 0007               1037                 CMP.B    #%111,D2
+00001C42  6700 0004               1038                 BEQ      subimm
+00001C46  4E75                    1039                 RTS                              *EA valid   
+00001C48                          1040  
+00001C48  B83C 0004               1041  subimm         CMP.B    #%100,D4
+00001C4C  6700 0004               1042                 BEQ      suberror
+00001C50  4E75                    1043                 RTS
+00001C52                          1044  
+00001C52  45F9 00002744           1045  suberror       LEA      message,A2
+00001C58  D4FC 0009               1046                 ADDA.W   #9,A2
+00001C5C  14FC 0053               1047                 MOVE.B   #$53,(A2)+
+00001C60  14FC 0055               1048                 MOVE.B   #$55,(A2)+
+00001C64  14FC 0042               1049                 MOVE.B   #$42,(A2)+              *Add "SUB" back to message
+00001C68  14FC 0020               1050                 MOVE.B   #$20,(A2)+
+00001C6C  4EB9 00002460           1051                 JSR      invalidmsg
+00001C72  123C 0002               1052                 MOVE.B   #2,D1
+00001C76  4E75                    1053                 RTS            
+00001C78                          1054  
+00001C78                          1055  *---------------------------------------------------------------------
+00001C78                          1056  *NOT NEEDED
+00001C78                          1057  *---------------------------------------------------------------------
+00001C78  123C 0001               1058  code1010       MOVE.B   #$1,D1
+00001C7C  4E75                    1059                 RTS
+00001C7E                          1060  
+00001C7E                          1061  *---------------------------------------------------------------------
+00001C7E                          1062  *NOT NEEDED
+00001C7E                          1063  *---------------------------------------------------------------------
+00001C7E  123C 0001               1064  code1011       MOVE.B   #1,D1
+00001C82  4E75                    1065                 RTS
+00001C84                          1066  
+00001C84                          1067  *---------------------------------------------------------------------
+00001C84                          1068  *AND
+00001C84                          1069  *   A2: Message
+00001C84                          1070  *   D3: Original Instruction
+00001C84                          1071  *---------------------------------------------------------------------
+00001C84  14FC 0041               1072  code1100       MOVE.B   #$41,(A2)+
+00001C88  14FC 004E               1073                 MOVE.B   #$4E,(A2)+
+00001C8C  14FC 0044               1074                 MOVE.B   #$44,(A2)+              *Add "AND" to the message
+00001C90  3803                    1075                 MOVE.W   D3,D4
+00001C92  EC4C                    1076                 LSR      #6,D4
+00001C94  0244 0007               1077                 ANDI.W   #%0000000000000111,D4
+00001C98  4EB9 00002224           1078                 JSR      addsize
+00001C9E  14FC 0020               1079                 MOVE.B   #$20,(A2)+
+00001CA2  4245                    1080                 CLR.W    D5
+00001CA4  4EB9 000022A4           1081                 JSR      addaddresses
+00001CAA  4EB9 00001CB6           1082                 JSR      anderrorcheck
+00001CB0  14FC 0000               1083                 MOVE.B   #$0,(A2)+
+00001CB4  4E75                    1084                 RTS
+00001CB6                          1085                 
+00001CB6  3803                    1086  anderrorcheck  MOVE.W   D3,D4
+00001CB8  EC4C                    1087                 LSR      #6,D4
+00001CBA  0244 0007               1088                 ANDI.W   #$0007,D4
+00001CBE  B83C 0007               1089                 CMP.B    #%111,D4
+00001CC2  6700 074A               1090                 BEQ      seterror
+00001CC6  B83C 0003               1091                 CMP.B    #%011,D4
+00001CCA  6700 0742               1092                 BEQ      seterror                *Invalid sizes
+00001CCE  B83C 0004               1093                 CMP.B    #%100,D4
+00001CD2  3403                    1094                 MOVE.W   D3,D2
+00001CD4  E64A                    1095                 LSR      #3,D2                   *get ea
+00001CD6  0242 0007               1096                 ANDI.W   #$0007,D2
+00001CDA  B83C 0003               1097                 CMP.B    #%011,D4
+00001CDE  6E00 000C               1098                 BGT      anddestcheck            *check for destination errors
+00001CE2  B43C 0001               1099                 CMP.B    #%001,D2                *check for source errors
+00001CE6  6700 002E               1100                 BEQ      anderror
+00001CEA  4E75                    1101                 RTS                              *Valid EA
+00001CEC                          1102  
+00001CEC  B43C 0000               1103  anddestcheck   CMP.B    #%000,D2
+00001CF0  6700 0024               1104                 BEQ      anderror
+00001CF4  B43C 0001               1105                 CMP.B    #%001,D2
+00001CF8  6700 001C               1106                 BEQ      anderror
+00001CFC  3803                    1107                 MOVE.W   D3,D4
+00001CFE  0244 0007               1108                 ANDI.W   #$0007,D4               *get Register
+00001D02  B43C 0007               1109                 CMP.B    #%111,D2
+00001D06  6700 0004               1110                 BEQ      andimm
+00001D0A  4E75                    1111                 RTS                              *EA valid
+00001D0C                          1112                 
+00001D0C  B83C 0004               1113  andimm         CMP.B    #%100,D4
+00001D10  6700 0004               1114                 BEQ      anderror
+00001D14  4E75                    1115                 RTS               
+00001D16                          1116  
+00001D16  45F9 00002744           1117  anderror       LEA      message,A2
+00001D1C  D4FC 0009               1118                 ADDA.W   #9,A2
+00001D20  14FC 0041               1119                 MOVE.B   #$41,(A2)+
+00001D24  14FC 004E               1120                 MOVE.B   #$4E,(A2)+
+00001D28  14FC 0044               1121                 MOVE.B   #$44,(A2)+
+00001D2C  14FC 0020               1122                 MOVE.B   #$20,(A2)+
+00001D30  4EB9 00002460           1123                 JSR      invalidmsg
+00001D36  123C 0002               1124                 MOVE.B   #2,D1
+00001D3A  4E75                    1125                 RTS                 
+00001D3C                          1126                 
+00001D3C                          1127  *---------------------------------------------------------------------
+00001D3C                          1128  *ADD/ADDA
+00001D3C                          1129  *   A2: Message
+00001D3C                          1130  *   D3: Original Instruction
+00001D3C                          1131  *---------------------------------------------------------------------
+00001D3C  14FC 0041               1132  code1101       MOVE.B   #$41,(A2)+
+00001D40  14FC 0044               1133                 MOVE.B   #$44,(A2)+
+00001D44  14FC 0044               1134                 MOVE.B   #$44,(A2)+              *Add "ADD" to the message
+00001D48  3803                    1135                 MOVE.W   D3,D4
+00001D4A  EC4C                    1136                 LSR      #6,D4
+00001D4C  0244 0007               1137                 ANDI.W   #%0000000000000111,D4
+00001D50  4EB9 00002286           1138                 JSR      checkadd                *Check for adda
+00001D56  3803                    1139                 MOVE.W   D3,D4
+00001D58  EC4C                    1140                 LSR      #6,D4                   *Process Size
+00001D5A  0244 0007               1141                 ANDI.W   #%0000000000000111,D4
+00001D5E  4EB9 00002224           1142                 JSR      addsize
+00001D64  14FC 0020               1143                 MOVE.B   #$20,(A2)+              *Add "  " to the message
+00001D68  4EB9 000022A4           1144                 JSR      addaddresses            *Add addresses to message
+00001D6E  14FC 0000               1145                 MOVE.B   #$0,(A2)+               *Add null character
+00001D72  4EB9 00001D7A           1146                 JSR      adderrorcheck           *check for errors
+00001D78  4E75                    1147                 RTS               
+00001D7A                          1148  
+00001D7A  3803                    1149  adderrorcheck  MOVE.W   D3,D4
+00001D7C  EC4C                    1150                 LSR      #6,D4
+00001D7E  0244 0007               1151                 ANDI.W   #$0007,D4
+00001D82  B83C 0003               1152                 CMP.B    #%011,D4
+00001D86  6E00 0004               1153                 BGT      adddestcheck            *Check destination
+00001D8A  4E75                    1154                 RTS                              *other forms of add valid
+00001D8C                          1155                
+00001D8C  3403                    1156  adddestcheck   MOVE.W   D3,D2
+00001D8E  E64A                    1157                 LSR      #3,D2
+00001D90  0242 0007               1158                 ANDI.W   #$0007,D2
+00001D94  B43C 0000               1159                 CMP.B    #%000,D2              
+00001D98  6700 0024               1160                 BEQ      adderror
+00001D9C  B43C 0001               1161                 CMP.B    #%001,D2
+00001DA0  6700 001C               1162                 BEQ      adderror
+00001DA4  3403                    1163                 MOVE.W   D3,D2
+00001DA6  0242 0007               1164                 ANDI.W   #$0007,D2
+00001DAA  B43C 0007               1165                 CMP.B    #%111,D2
+00001DAE  6700 0004               1166                 BEQ      addimm
+00001DB2  4E75                    1167                 RTS               
+00001DB4                          1168                 
+00001DB4  B83C 0004               1169  addimm         CMP.B    #%100,D4
+00001DB8  6700 0004               1170                 BEQ      adderror
+00001DBC  4E75                    1171                 RTS               
+00001DBE                          1172                 
+00001DBE  45F9 00002744           1173  adderror       LEA      message,A2
+00001DC4  D4FC 0009               1174                 ADDA.W   #9,A2
+00001DC8  14FC 0041               1175                 MOVE.B   #$41,(A2)+
+00001DCC  14FC 0044               1176                 MOVE.B   #$44,(A2)+
+00001DD0  14FC 0044               1177                 MOVE.B   #$44,(A2)+
+00001DD4  14FC 0020               1178                 MOVE.B   #$20,(A2)+
+00001DD8  4EB9 00002460           1179                 JSR      invalidmsg
+00001DDE  123C 0002               1180                 MOVE.B   #2,D1
+00001DE2  4E75                    1181                 RTS               
+00001DE4                          1182  *---------------------------------------------------------------------
+00001DE4                          1183  *ROL/ROR/LSL/LSR/ASL/ASR
+00001DE4                          1184  *   A2: Message
+00001DE4                          1185  *   D3: Original Instruction
+00001DE4                          1186  *---------------------------------------------------------------------               
+00001DE4  3803                    1187  code1110       MOVE.W   D3,D4
+00001DE6  EC4C                    1188                 LSR      #6,D4
+00001DE8  0244 0003               1189                 ANDI.W   #3,D4
+00001DEC  B83C 0003               1190                 CMP.B    #$03,D4
+00001DF0  6700 0028               1191                 BEQ      memshift                *Instruction a memory shift
+00001DF4  3803                    1192                 MOVE.W   D3,D4                   *Instruction a register shift
+00001DF6  E64C                    1193                 LSR      #3,D4
+00001DF8  0244 0003               1194                 ANDI.W   #3,D4
+00001DFC  B83C 0003               1195                 CMP.B    #$03,D4
+00001E00  6700 0106               1196                 BEQ      regrotate               *Instruction a register RO
+00001E04  B83C 0001               1197                 CMP.B    #$01,D4
+00001E08  6700 0138               1198                 BEQ      reglogical              *Instruction a register LS
+00001E0C  B83C 0000               1199                 CMP.B    #$00,D4
+00001E10  6700 016A               1200                 BEQ      regarith                *Instruction a register AS
+00001E14  123C 0001               1201                 MOVE.B   #1,D1                   *Not a valid shift
+00001E18  4E75                    1202                 RTS
+00001E1A                          1203  
+00001E1A  3803                    1204  memshift       MOVE.W   D3,D4
+00001E1C  E04C                    1205                 LSR      #8,D4
+00001E1E  E24C                    1206                 LSR      #1,D4
+00001E20  0244 0007               1207                 ANDI.W   #$0007,D4
+00001E24  B83C 0000               1208                 CMP.B    #%000,D4
+00001E28  6700 0018               1209                 BEQ      memarith                *Instruction is memory AS
+00001E2C  B83C 0001               1210                 CMP.B    #%001,D4
+00001E30  6700 0052               1211                 BEQ      memlogical              *Instruction is memory LS
+00001E34  B83C 0003               1212                 CMP.B    #%011,D4
+00001E38  6700 008C               1213                 BEQ      memrotate               *Instruction is memory RO
+00001E3C  123C 0001               1214                 MOVE.B   #1,D1                   *Not a valid shift
+00001E40  4E75                    1215                 RTS
+00001E42                          1216  
+00001E42  14FC 0041               1217  memarith       MOVE.B   #$41,(A2)+              
+00001E46  14FC 0053               1218                 MOVE.B   #$53,(A2)+              *Add "AS" to the message
+00001E4A  4EB9 00001FB6           1219                 JSR      direction               *Process direction of shift
+00001E50  14FC 002E               1220                 MOVE.B   #$2E,(A2)+
+00001E54  14FC 0057               1221                 MOVE.B   #$57,(A2)+              *Add ".W" to the message
+00001E58  14FC 0020               1222                 MOVE.B   #$20,(A2)+
+00001E5C  3403                    1223                 MOVE.W   D3,D2
+00001E5E  E64A                    1224                 LSR      #3,D2
+00001E60  0242 0007               1225                 ANDI.W   #$0007,D2
+00001E64  C4FC 0006               1226                 MULU     #6,D2
+00001E68  3803                    1227                 MOVE.W   D3,D4
+00001E6A  0244 0007               1228                 ANDI.W   #$0007,D4
+00001E6E  41F9 000020D2           1229                 LEA      ea_jump,A0
+00001E74  4EB0 2000               1230                 JSR      0(A0,D2)                *Process EA
+00001E78  14FC 0000               1231                 MOVE.B   #$0,(A2)+               *Add null character
+00001E7C  4EB9 00002080           1232                 JSR      memerrorcheck           *Check for errors
+00001E82  4E75                    1233                 RTS
+00001E84                          1234                  
+00001E84  14FC 004C               1235  memlogical     MOVE.B   #$4C,(A2)+
+00001E88  14FC 0053               1236                 MOVE.B   #$53,(A2)+              *Add "LS" to the message
+00001E8C  4EB9 00001FB6           1237                 JSR      direction               *Process direction of shift
+00001E92  14FC 002E               1238                 MOVE.B   #$2E,(A2)+
+00001E96  14FC 0057               1239                 MOVE.B   #$57,(A2)+              *Add ".W" to the message
+00001E9A  14FC 0020               1240                 MOVE.B   #$20,(A2)+
+00001E9E  3403                    1241                 MOVE.W   D3,D2
+00001EA0  E64A                    1242                 LSR      #3,D2
+00001EA2  0242 0007               1243                 ANDI.W   #$0007,D2
+00001EA6  C4FC 0006               1244                 MULU     #6,D2
+00001EAA  3803                    1245                 MOVE.W   D3,D4
+00001EAC  0244 0007               1246                 ANDI.W   #$0007,D4
+00001EB0  41F9 000020D2           1247                 LEA      ea_jump,A0
+00001EB6  4EB0 2000               1248                 JSR      0(A0,D2)                *Process EA
+00001EBA  14FC 0000               1249                 MOVE.B   #$0,(A2)+               *Add null character
+00001EBE  4EB9 00002080           1250                 JSR      memerrorcheck           *Check for errors
+00001EC4  4E75                    1251                 RTS
+00001EC6                          1252                 
+00001EC6  14FC 0052               1253  memrotate      MOVE.B   #$52,(A2)+
+00001ECA  14FC 004F               1254                 MOVE.B   #$4F,(A2)+              *Add "RO" to the message
+00001ECE  4EB9 00001FB6           1255                 JSR      direction               *Process direction of rotation
+00001ED4  14FC 002E               1256                 MOVE.B   #$2E,(A2)+
+00001ED8  14FC 0057               1257                 MOVE.B   #$57,(A2)+              *Add ".W" to the message
+00001EDC  14FC 0020               1258                 MOVE.B   #$20,(A2)+
+00001EE0  3403                    1259                 MOVE.W   D3,D2
+00001EE2  E64A                    1260                 LSR      #3,D2
+00001EE4  0242 0007               1261                 ANDI.W   #$0007,D2
+00001EE8  C4FC 0006               1262                 MULU     #6,D2
+00001EEC  3803                    1263                 MOVE.W   D3,D4
+00001EEE  0244 0007               1264                 ANDI.W   #$0007,D4
+00001EF2  41F9 000020D2           1265                 LEA      ea_jump,A0
+00001EF8  4EB0 2000               1266                 JSR      0(A0,D2)                *Process EA
+00001EFC  14FC 0000               1267                 MOVE.B   #$0,(A2)+               *Add null character
+00001F00  4EB9 00002080           1268                 JSR      memerrorcheck           *check for errors
+00001F06  4E75                    1269                 RTS            
+00001F08                          1270  
+00001F08  14FC 0052               1271  regrotate      MOVE.B   #$52,(A2)+
+00001F0C  14FC 004F               1272                 MOVE.B   #$4F,(A2)+              *Add "RO" to the message
+00001F10  4EB9 00001FB6           1273                 JSR      direction               *Process direction of rotate
+00001F16  4EB9 00001FD2           1274                 JSR      regsize                 *Process the size of the shift
+00001F1C  4EB9 0000201E           1275                 JSR      shiftcount              *Process shift count
+00001F22  14FC 002C               1276                 MOVE.B   #$2C,(A2)+              *Add "," to the message
+00001F26  3803                    1277                 MOVE.W   D3,D4
+00001F28  0244 0007               1278                 ANDI.W   #$0007,D4               *Get the destination register
+00001F2C  14FC 0044               1279                 MOVE.B   #$44,(A2)+              *Add "D" to the message
+00001F30  4EB9 000021FC           1280                 JSR      hextoasc                *Add the register number to the message
+00001F36  14FC 0000               1281                 MOVE.B   #$0,(A2)+               *Add null character to message
+00001F3A  4EB9 0000206E           1282                 JSR      regerrorcheck           *check for errors
+00001F40  4E75                    1283                 RTS
+00001F42                          1284  
+00001F42  14FC 004C               1285  reglogical     MOVE.B   #$4C,(A2)+
+00001F46  14FC 0053               1286                 MOVE.B   #$53,(A2)+              *Add "LS" to the message
+00001F4A  4EB9 00001FB6           1287                 JSR      direction               *Process direction of shift
+00001F50  4EB9 00001FD2           1288                 JSR      regsize                 *Process the size of the shift
+00001F56  4EB9 0000201E           1289                 JSR      shiftcount              *Process shift count
+00001F5C  14FC 002C               1290                 MOVE.B   #$2C,(A2)+              *Add "," to the message
+00001F60  3803                    1291                 MOVE.W   D3,D4
+00001F62  0244 0007               1292                 ANDI.W   #$0007,D4               *Get the destination register
+00001F66  14FC 0044               1293                 MOVE.B   #$44,(A2)+              *Add "D" to the message
+00001F6A  4EB9 000021FC           1294                 JSR      hextoasc                *Add the register number to the message
+00001F70  14FC 0000               1295                 MOVE.B   #$0,(A2)+               *Add null character to message
+00001F74  4EB9 0000206E           1296                 JSR      regerrorcheck           *check for errors
+00001F7A  4E75                    1297                 RTS
+00001F7C                          1298  
+00001F7C  14FC 0041               1299  regarith       MOVE.B   #$41,(A2)+
+00001F80  14FC 0053               1300                 MOVE.B   #$53,(A2)+              *Add "AS" to the message
+00001F84  4EB9 00001FB6           1301                 JSR      direction               *Process direction of shift
+00001F8A  4EB9 00001FD2           1302                 JSR      regsize                 *Process the size of the shift
+00001F90  4EB9 0000201E           1303                 JSR      shiftcount              *Process shift count
+00001F96  14FC 002C               1304                 MOVE.B   #$2C,(A2)+              *Add "," to the message
+00001F9A  3803                    1305                 MOVE.W   D3,D4
+00001F9C  0244 0007               1306                 ANDI.W   #$0007,D4               *Get the destination register
+00001FA0  14FC 0044               1307                 MOVE.B   #$44,(A2)+              *Add "D" to the message
+00001FA4  4EB9 000021FC           1308                 JSR      hextoasc                *Add the register number to the message
+00001FAA  14FC 0000               1309                 MOVE.B   #$0,(A2)+               *Add null character to message
+00001FAE  4EB9 0000206E           1310                 JSR      regerrorcheck           *check for errors
+00001FB4  4E75                    1311                 RTS
+00001FB6                          1312                 
+00001FB6  3803                    1313  direction      MOVE.W   D3,D4                   *Same for mem and reg shifts
+00001FB8  E04C                    1314                 LSR      #8,D4
+00001FBA  0244 0001               1315                 ANDI.W   #$0001,D4
+00001FBE  B83C 0000               1316                 CMP.B    #0,D4
+00001FC2  6700 0008               1317                 BEQ      right                   *Direction is right
+00001FC6  14FC 004C               1318                 MOVE.B   #$4C,(A2)+              *Add "L" to the message
+00001FCA  4E75                    1319                 RTS
+00001FCC                          1320                 
+00001FCC  14FC 0052               1321  right          MOVE.B   #$52,(A2)+              *Add "R" to the message
+00001FD0  4E75                    1322                 RTS  
+00001FD2                          1323                 
+00001FD2  3803                    1324  regsize        MOVE.W   D3,D4
+00001FD4  EC4C                    1325                 LSR      #6,D4
+00001FD6  0244 0003               1326                 ANDI.W   #$0003,D4
+00001FDA  B83C 0000               1327                 CMP.B    #%00,D4
+00001FDE  6700 0014               1328                 BEQ      shiftbyte               *Size is a byte
+00001FE2  B83C 0001               1329                 CMP.B    #%01,D4
+00001FE6  6700 001A               1330                 BEQ      shiftword               *Size is a word
+00001FEA  B83C 0002               1331                 CMP.B    #%10,D4
+00001FEE  6700 0020               1332                 BEQ      shiftlong               *Size is a long
+00001FF2  4E75                    1333                 RTS
+00001FF4                          1334                 
+00001FF4  14FC 002E               1335  shiftbyte      MOVE.B   #$2E,(A2)+
+00001FF8  14FC 0042               1336                 MOVE.B   #$42,(A2)+
+00001FFC  14FC 0020               1337                 MOVE.B   #$20,(A2)+              *Add ".B " to the message
+00002000  4E75                    1338                 RTS
+00002002                          1339  
+00002002  14FC 002E               1340  shiftword      MOVE.B   #$2E,(A2)+
+00002006  14FC 0057               1341                 MOVE.B   #$57,(A2)+
+0000200A  14FC 0020               1342                 MOVE.B   #$20,(A2)+              *Add ".W " to the message
+0000200E  4E75                    1343                 RTS
+00002010                          1344  
+00002010  14FC 002E               1345  shiftlong      MOVE.B   #$2E,(A2)+
+00002014  14FC 004C               1346                 MOVE.B   #$4C,(A2)+
+00002018  14FC 0020               1347                 MOVE.B   #$20,(A2)+              *Add ".L " to the message
+0000201C  4E75                    1348                 RTS
+0000201E                          1349                 
+0000201E  3803                    1350  shiftcount     MOVE.W   D3,D4
+00002020  EA4C                    1351                 LSR      #5,D4
+00002022  0244 0001               1352                 ANDI.W   #$0001,D4
+00002026  B83C 0000               1353                 CMP.B    #0,D4
+0000202A  6700 0018               1354                 BEQ      immcount                *The instruction has immediate shift count
+0000202E  14FC 0044               1355                 MOVE.B   #$44,(A2)+              *Add "D" to the message
+00002032  3803                    1356                 MOVE.W   D3,D4
+00002034  E04C                    1357                 LSR      #8,D4
+00002036  E24C                    1358                 LSR      #1,D4
+00002038  0244 0007               1359                 ANDI.W   #$0007,D4
+0000203C  4EB9 000021FC           1360                 JSR      hextoasc                *Add the register number to the message
+00002042  4E75                    1361                 RTS
+00002044                          1362                 
+00002044  14FC 0023               1363  immcount       MOVE.B   #$23,(A2)+              *Add "#" to the message
+00002048  3803                    1364                 MOVE.W   D3,D4
+0000204A  E04C                    1365                 LSR      #8,D4
+0000204C  E24C                    1366                 LSR      #1,D4
+0000204E  0244 0007               1367                 ANDI.W   #$0007,D4
+00002052  B83C 0000               1368                 CMP.B    #0,D4                   *Check the amount to shift
+00002056  6700 000A               1369                 BEQ      immeight                *The shift is 8
+0000205A  4EB9 000021FC           1370                 JSR      hextoasc                *Add the shift count to the message
+00002060  4E75                    1371                 RTS
+00002062                          1372  
+00002062  183C 0008               1373  immeight       MOVE.B   #8,D4                   *Change the count to 8
+00002066  4EB9 000021FC           1374                 JSR      hextoasc                *Add 8 to the message
+0000206C  4E75                    1375                 RTS
+0000206E                          1376  
+0000206E  3803                    1377  regerrorcheck  MOVE.W   D3,D4
+00002070  EC4C                    1378                 LSR      #6,D4
+00002072  0244 0003               1379                 ANDI.W   #$0003,D4
+00002076  B83C 0003               1380                 CMP.B    #%11,D4
+0000207A  6700 0392               1381                 BEQ      seterror                *Invalid size
+0000207E  4E75                    1382                 RTS                              *Valid size
+00002080                          1383                 
+00002080  3403                    1384  memerrorcheck  MOVE.W   D3,D2
+00002082  E64A                    1385                 LSR      #3,D2
+00002084  0242 0007               1386                 ANDI.W   #$0007,D2
+00002088  B43C 0000               1387                 CMP.B    #%000,D2
+0000208C  6700 0024               1388                 BEQ      shifterror
+00002090  B43C 0001               1389                 CMP.B    #%001,D2
+00002094  6700 001C               1390                 BEQ      shifterror
+00002098  3803                    1391                 MOVE.W   D3,D4
+0000209A  0242 0007               1392                 ANDI.W   #$0007,D2
+0000209E  B43C 0007               1393                 CMP.B    #%111,D2
+000020A2  6700 0004               1394                 BEQ      memimm
+000020A6  4E75                    1395                 RTS                              *Valid ea 
+000020A8                          1396                 
+000020A8  B83C 0004               1397  memimm         CMP.B    #%100,D4
+000020AC  6700 0004               1398                 BEQ      shifterror
+000020B0  4E75                    1399                 RTS               
+000020B2                          1400                 
+000020B2  45F9 00002744           1401  shifterror     LEA      message,A2
+000020B8  D4FC 000C               1402                 ADDA.W   #12,A2               
+000020BC  14FC 0020               1403                 MOVE.B   #$20,(A2)+              *Move message past opcode
+000020C0  4EB9 00002460           1404                 JSR      invalidmsg
+000020C6  123C 0002               1405                 MOVE.B   #2,D1
+000020CA  4E75                    1406                 RTS
+000020CC                          1407                 
+000020CC                          1408  
+000020CC                          1409  *---------------------------------------------------------------------
+000020CC                          1410  *NOT NEEDED
+000020CC                          1411  *---------------------------------------------------------------------
+000020CC  123C 0001               1412  code1111      MOVE.B    #1,D1
+000020D0  4E75                    1413                RTS
+000020D2                          1414  
+000020D2                          1415  *---------------------------------------------------------------------
+000020D2                          1416  *EA JUMP TABLE     
+000020D2                          1417  *---------------------------------------------------------------------
+000020D2  4EF9 00002102           1418  ea_jump       JMP          code000
+000020D8  4EF9 0000210E           1419                JMP          code001
+000020DE  4EF9 0000211A           1420                JMP          code010
+000020E4  4EF9 0000212E           1421                JMP          code011
+000020EA  4EF9 00002146           1422                JMP          code100
+000020F0  4EF9 0000215E           1423                JMP          code101
+000020F6  4EF9 00002164           1424                JMP          code110
+000020FC  4EF9 0000216A           1425                JMP          code111
+00002102                          1426                
+00002102                          1427  *---------------------------------------------------------------------
+00002102                          1428  *EA: Data Register Direct
+00002102                          1429  *   D4: Register
+00002102                          1430  *   A2: Message
+00002102                          1431  *---------------------------------------------------------------------              
+00002102  14FC 0044               1432  code000       MOVE.B    #$44,(A2)+              *Add "D" to the message
+00002106  4EB9 000021FC           1433                JSR       hextoasc                *Add the register to the message
+0000210C  4E75                    1434                RTS
+0000210E                          1435  
+0000210E                          1436  *---------------------------------------------------------------------
+0000210E                          1437  *EA: Address Register Direct
+0000210E                          1438  *   D4: Register
+0000210E                          1439  *   A2: Message
+0000210E                          1440  *---------------------------------------------------------------------              
+0000210E  14FC 0041               1441  code001       MOVE.B    #$41,(A2)+              *Add "A" to the message
+00002112  4EB9 000021FC           1442                JSR       hextoasc                *Add the register to the message
+00002118  4E75                    1443                RTS
+0000211A                          1444  
+0000211A                          1445  *---------------------------------------------------------------------
+0000211A                          1446  *EA: Address Register Indirect
+0000211A                          1447  *   D4: Register
+0000211A                          1448  *   A2: Message
+0000211A                          1449  *---------------------------------------------------------------------
+0000211A  14FC 0028               1450  code010       MOVE.B    #$28,(A2)+
+0000211E  14FC 0041               1451                MOVE.B    #$41,(A2)+              *Add "(A" to the message
+00002122  4EB9 000021FC           1452                JSR       hextoasc                *Process the register
+00002128  14FC 0029               1453                MOVE.B    #$29,(A2)+              *Add ")" to the message
+0000212C  4E75                    1454                RTS
+0000212E                          1455  
+0000212E                          1456  *---------------------------------------------------------------------
+0000212E                          1457  *EA: Address Register Indirect w/ Post-Increment
+0000212E                          1458  *   D4: Register
+0000212E                          1459  *   A2: Message
+0000212E                          1460  *---------------------------------------------------------------------              
+0000212E  14FC 0028               1461  code011       MOVE.B    #$28,(A2)+              *Add "(" to the message
+00002132  14FC 0041               1462                MOVE.B    #$41,(A2)+              *Add "A" to the message
+00002136  4EB9 000021FC           1463                JSR       hextoasc                *Process the register
+0000213C  14FC 0029               1464                MOVE.B    #$29,(A2)+              *Add ")" to the message
+00002140  14FC 002B               1465                MOVE.B    #$2B,(A2)+              *Add "+" to the message
+00002144  4E75                    1466                RTS
+00002146                          1467  
+00002146                          1468  *---------------------------------------------------------------------
+00002146                          1469  *EA: Address Register Indirect w/ Pre-Decrement
+00002146                          1470  *   D4: Register
+00002146                          1471  *   A2: Message
+00002146                          1472  *---------------------------------------------------------------------
+00002146  14FC 002D               1473  code100       MOVE.B    #$2D,(A2)+              
+0000214A  14FC 0028               1474                MOVE.B    #$28,(A2)+
+0000214E  14FC 0041               1475                MOVE.B    #$41,(A2)+              *Add "-(A" to the message
+00002152  4EB9 000021FC           1476                JSR       hextoasc                *Process the register
+00002158  14FC 0029               1477                MOVE.B    #$29,(A2)+              *Add ")" to the message
+0000215C  4E75                    1478                RTS
+0000215E                          1479  
+0000215E                          1480  *---------------------------------------------------------------------
+0000215E                          1481  *NOT NEEDED
+0000215E                          1482  *---------------------------------------------------------------------
+0000215E  123C 0001               1483  code101       MOVE.B    #1,D1
+00002162  4E75                    1484                RTS
+00002164                          1485  
+00002164                          1486  *---------------------------------------------------------------------
+00002164                          1487  *NOT NEEDED
+00002164                          1488  *---------------------------------------------------------------------
+00002164  123C 0001               1489  code110       MOVE.B    #1,D1
+00002168  4E75                    1490                RTS
+0000216A                          1491  
+0000216A                          1492  *---------------------------------------------------------------------
+0000216A                          1493  *EA: Absolute Address/Immediate Addressing
+0000216A                          1494  *   D4: Register
+0000216A                          1495  *   D6: Size
+0000216A                          1496  *   A2: Message
+0000216A                          1497  *   A4: NEXT INSTRUCTION
+0000216A                          1498  *---------------------------------------------------------------------
+0000216A  B83C 0001               1499  code111       CMP.B     #%001,D4
+0000216E  6700 0018               1500                BEQ       absolLong               *Absolute Long Addressing
+00002172  B83C 0004               1501                CMP.B     #%100,D4
+00002176  6700 0044               1502                BEQ       immaddressing           *Immediate addressing
+0000217A  B83C 0000               1503                CMP.B     #%000,D4
+0000217E  6700 001E               1504                BEQ       absolWord               *Absolute Word Addressing
+00002182  123C 0001               1505                MOVE.B    #1,D1                   *Invalid addressing
+00002186  4E75                    1506                RTS
+00002188                          1507                
+00002188  14FC 0024               1508  absolLong     MOVE.B    #$24,(A2)+              *Add "$" to the message
+0000218C  381C                    1509                MOVE.W    (A4)+,D4                *Read from the high order word
+0000218E  4EB9 000023DC           1510                JSR       wordtoasc               *Process high order word
+00002194  381C                    1511                MOVE.W    (A4)+,D4                *Read from low order word
+00002196  4EB9 000023DC           1512                JSR       wordtoasc               *Process low order word
+0000219C  4E75                    1513                RTS
+0000219E                          1514                
+0000219E  14FC 0024               1515  absolWord     MOVE.B    #$24,(A2)+              *Add "$" to the message
+000021A2  381C                    1516                MOVE.W    (A4)+,D4                *Read from the next line
+000021A4  48C4                    1517                EXT.L     D4                      *Sign extension of the word
+000021A6  3F04                    1518                MOVE.W    D4,-(SP)                *Save the low order word
+000021A8  E08C                    1519                LSR.L     #8,D4
+000021AA  E08C                    1520                LSR.L     #8,D4
+000021AC  4EB9 000023DC           1521                JSR       wordtoasc               *Process the sign extension
+000021B2  381F                    1522                MOVE.W    (SP)+,D4                *Get the original word
+000021B4  4EB9 000023DC           1523                JSR       wordtoasc               *Process the original word
+000021BA  4E75                    1524                RTS
+000021BC                          1525  
+000021BC  14FC 0023               1526  immaddressing MOVE.B    #$23,(A2)+              *Add "#" to the message
+000021C0  BC3C 0000               1527                CMP.B     #%00,D6                 *Check the size flag
+000021C4  6700 0014               1528                BEQ       immbyte                 *Immediate byte
+000021C8  BC3C 0001               1529                CMP.B     #%01,D6
+000021CC  67D0                    1530                BEQ       absolWord               *Immediate word (Process like immediate)
+000021CE  BC3C 0002               1531                CMP.B     #%10,D6
+000021D2  67B4                    1532                BEQ       absolLong               *Immediate Long
+000021D4  123C 0001               1533                MOVE.B    #1,D1                   *Invalid addressing
+000021D8  4E75                    1534                RTS       
+000021DA                          1535  
+000021DA  14FC 0024               1536  immbyte       MOVE.B    #$24,(A2)+              *Add "$" to the message
+000021DE  381C                    1537                MOVE.W    (A4)+,D4                *Read the word
+000021E0  3F04                    1538                MOVE.W    D4,-(SP)                *Store the word in the stack
+000021E2  E84C                    1539                LSR       #4,D4
+000021E4  0244 000F               1540                ANDI.W    #$000F,D4
+000021E8  4EB9 000021FC           1541                JSR       hextoasc                *Process the first digit       
+000021EE  381F                    1542                MOVE.W    (SP)+,D4                *Get the word again
+000021F0  0244 000F               1543                ANDI.W    #$000F,D4
+000021F4  4EB9 000021FC           1544                JSR       hextoasc                *Process the second digit
+000021FA  4E75                    1545                RTS 
+000021FC                          1546                
+000021FC                          1547  *---------------------------------------------------------------------
+000021FC                          1548  *SUBROUTINE: HEX TO ASCII (ADDS A HEX NUMBER TO END OF MESSAGE)
+000021FC                          1549  *   D4: Target Hex Value
+000021FC                          1550  *   A2: Message
+000021FC                          1551  *---------------------------------------------------------------------
+000021FC  B83C 000A               1552  hextoasc      CMP.B    #$A,D4
+00002200  6D00 000A               1553                BLT      baseten
+00002204  0604 0037               1554                ADD.B    #$37,D4
+00002208  14C4                    1555                MOVE.B   D4,(A2)+
+0000220A  4E75                    1556                RTS
+0000220C  0604 0030               1557  baseten       ADD.B    #$30,D4
+00002210  14C4                    1558                MOVE.B   D4,(A2)+
+00002212  4E75                    1559                RTS
+00002214                          1560                
+00002214                          1561  *---------------------------------------------------------------------
+00002214                          1562  *SUBROUTINE: isaddress (USED TO CHECK FOR MOVEA)
+00002214                          1563  *   D4: MODE
+00002214                          1564  *   A2: Message
+00002214                          1565  *---------------------------------------------------------------------
+00002214  B83C 0001               1566  isaddress    CMP.B    #%001,D4
+00002218  6700 0004               1567               BEQ      moveaddress
+0000221C  4E75                    1568               RTS
+0000221E                          1569               
+0000221E  14FC 0041               1570  moveaddress  MOVE.B   #$41,(A2)+
+00002222  4E75                    1571               RTS
+00002224                          1572  
+00002224                          1573  *---------------------------------------------------------------------
+00002224                          1574  *SUBROUTINE: addsize (USED TO CHECK SIZE OF ADD)
+00002224                          1575  *   D4: Size
+00002224                          1576  *   A2: Message
+00002224                          1577  *---------------------------------------------------------------------            
+00002224  14FC 002E               1578  addsize     MOVE.B  #$2E,(A2)+                  *Add "." to the message
+00002228  B83C 0000               1579              CMP.B   #%000,D4
+0000222C  6700 003A               1580              BEQ     addsbyte                    *size is byte
+00002230  B83C 0004               1581              CMP.B   #%100,D4
+00002234  6700 0032               1582              BEQ     addsbyte                    *Size is byte
+00002238  B83C 0001               1583              CMP.B   #%001,D4
+0000223C  6700 0034               1584              BEQ     addsword                    *Size is word
+00002240  B83C 0005               1585              CMP.B   #%101,D4
+00002244  6700 002C               1586              BEQ     addsword                    *Size is word
+00002248  B83C 0003               1587              CMP.B   #%011,D4
+0000224C  6700 0024               1588              BEQ     addsword                    *Size is word
+00002250  B83C 0002               1589              CMP.B   #%010,D4
+00002254  6700 0026               1590              BEQ     addslong                    *Size is long
+00002258  B83C 0006               1591              CMP.B   #%110,D4
+0000225C  6700 001E               1592              BEQ     addslong                    *Size is long
+00002260  B83C 0007               1593              CMP.B   #%111,D4
+00002264  6700 0016               1594              BEQ     addslong                    *Size is long
+00002268                          1595              
+00002268  14FC 0042               1596  addsbyte    MOVE.B  #$42,(A2)+                  *Add "B" to the message
+0000226C  1C3C 0000               1597              MOVE.B  #%00,D6
+00002270  4E75                    1598              RTS
+00002272                          1599  
+00002272  14FC 0057               1600  addsword    MOVE.B  #$57,(A2)+                  *Add "W" to the message
+00002276  1C3C 0001               1601              MOVE.B  #%01,D6
+0000227A  4E75                    1602              RTS
+0000227C                          1603  
+0000227C  14FC 004C               1604  addslong    MOVE.B  #$4C,(A2)+                  *Add "L" to the message
+00002280  1C3C 0002               1605              MOVE.B  #%10,D6
+00002284  4E75                    1606              RTS
+00002286                          1607              
+00002286                          1608  *---------------------------------------------------------------------
+00002286                          1609  *SUBROUTINE checkadd (Check if ADD or ADDA)
+00002286                          1610  *   D4: OPMode
+00002286                          1611  *   D5: Address flag (used for printing out the address later)
+00002286                          1612  *   A2: Message
+00002286                          1613  *---------------------------------------------------------------------
+00002286  4245                    1614  checkadd    CLR   D5
+00002288  B83C 0003               1615              CMP.B   #%011,D4
+0000228C  6700 000C               1616              BEQ     addamsg
+00002290  B83C 0007               1617              CMP.B   #%111,D4
+00002294  6700 0004               1618              BEQ     addamsg
+00002298  4E75                    1619              RTS
+0000229A                          1620  
+0000229A  1A3C 0001               1621  addamsg     MOVE.B  #1,D5 *set the address flag
+0000229E  14FC 0041               1622              MOVE.B  #$41,(A2)+
+000022A2  4E75                    1623              RTS
+000022A4                          1624              
+000022A4                          1625  *---------------------------------------------------------------------
+000022A4                          1626  *SUBROUTINE addaddresses (processes addresses for Add/Adda/And)
+000022A4                          1627  *   D3: Original Instruction
+000022A4                          1628  *   D5: Address flag (ONLY FOR ADD/ADDA)
+000022A4                          1629  *   A2: Message
+000022A4                          1630  *---------------------------------------------------------------------
+000022A4  BA3C 0001               1631  addaddresses CMP.B  #1,D5                       *Check if address flag is set
+000022A8  6700 0044               1632              BEQ     adda
+000022AC  3803                    1633              MOVE.W  D3,D4
+000022AE  EC4C                    1634              LSR     #6,D4                       *Get OPMode
+000022B0  0244 0007               1635              ANDI.W  #%0000000000000111,D4
+000022B4  B83C 0004               1636              CMP.B   #4,D4                       *Check if register is destination
+000022B8  6D00 0066               1637              BLT     adddest
+000022BC  14FC 0044               1638              MOVE.B  #$44,(A2)+                  *Register is source, add "D" to message
+000022C0  3803                    1639              MOVE.W  D3,D4
+000022C2  E04C                    1640              LSR     #8,D4
+000022C4  E24C                    1641              LSR     #1,D4
+000022C6  0244 0007               1642              ANDI.W  #%0000000000000111,D4
+000022CA  4EB8 21FC               1643              JSR     hextoasc                    *Process Register
+000022CE  14FC 002C               1644              MOVE.B  #$2C,(A2)+                  *Add "," to message
+000022D2  3403                    1645              MOVE.W  D3,D2
+000022D4  E64A                    1646              LSR     #3,D2
+000022D6  0242 0007               1647              ANDI.W  #%0000000000000111,D2
+000022DA  C4FC 0006               1648              MULU    #6,D2
+000022DE  3803                    1649              MOVE.W  D3,D4
+000022E0  0244 0007               1650              ANDI.W  #%0000000000000111,D4
+000022E4  41F8 20D2               1651              LEA     ea_jump,A0
+000022E8  4EB0 2000               1652              JSR     0(A0,D2)                    *Process EA
+000022EC  4E75                    1653              RTS
+000022EE                          1654              
+000022EE  3403                    1655  adda        MOVE.W  D3,D2                       *Get EA
+000022F0  E64A                    1656              LSR     #3,D2
+000022F2  0242 0007               1657              ANDI.W  #%0000000000000111,D2
+000022F6  3803                    1658              MOVE.W  D3,D4                       *Get Register
+000022F8  0244 0007               1659              ANDI.W  #%0000000000000111,D4
+000022FC  41F8 20D2               1660              LEA     ea_jump,A0
+00002300  C4FC 0006               1661              MULU    #6,D2
+00002304  4EB0 2000               1662              JSR     0(A0,D2)                    *Process EA
+00002308  14FC 002C               1663              MOVE.B  #$2C,(A2)+                  *Add "," to message
+0000230C  14FC 0041               1664              MOVE.B  #$41,(A2)+                  *Add "A" to message
+00002310  3803                    1665              MOVE.W  D3,D4
+00002312  E04C                    1666              LSR     #8,D4               
+00002314  E24C                    1667              LSR     #1,D4
+00002316  0244 0007               1668              ANDI.W  #%0000000000000111,D4
+0000231A  4EB8 21FC               1669              JSR     hextoasc                    *Process Register
+0000231E  4E75                    1670              RTS            
+00002320                          1671              
+00002320  3403                    1672  adddest     MOVE.W  D3,D2
+00002322  E64A                    1673              LSR     #3,D2                       *Get EA
+00002324  0242 0007               1674              ANDI.W  #%0000000000000111,D2
+00002328  3803                    1675              MOVE.W  D3,D4                       *Get register
+0000232A  0244 0007               1676              ANDI.W  #%0000000000000111,D4
+0000232E  41F8 20D2               1677              LEA     ea_jump,A0
+00002332  C4FC 0006               1678              MULU    #6,D2         
+00002336  4EB0 2000               1679              JSR     0(A0,D2)                    *Process EA
+0000233A  14FC 002C               1680              MOVE.B  #$2C,(A2)+
+0000233E  14FC 0044               1681              MOVE.B  #$44,(A2)+                  *Add ",D" to the message
+00002342  3803                    1682              MOVE.W  D3,D4
+00002344  E04C                    1683              LSR     #8,D4
+00002346  E24C                    1684              LSR     #1,D4
+00002348  0244 0007               1685              ANDI.W  #%0000000000000111,D4
+0000234C  4EB8 21FC               1686              JSR     hextoasc                    *Process register
+00002350  4E75                    1687              RTS
+00002352                          1688  
+00002352                          1689  *---------------------------------------------------------------------
+00002352                          1690  *SUBROUTINE: addqsize
+00002352                          1691  *   D4: Size
+00002352                          1692  *   A2: Message
+00002352                          1693  *---------------------------------------------------------------------
+00002352  B83C 0000               1694  addqsize   CMP.B    #%00,D4
+00002356  6700 0018               1695             BEQ      addqb                       *Size is a byte
+0000235A  B83C 0001               1696             CMP.B    #%01,D4
+0000235E  6700 001A               1697             BEQ      addqw                       *Size is a word
+00002362  B83C 0002               1698             CMP.B    #%10,D4
+00002366  6700 001C               1699             BEQ      addql                       *Size is a long
+0000236A  123C 0001               1700             MOVE.B   #1,D1                       *Invalid Size
+0000236E  4E75                    1701             RTS
+00002370                          1702             
+00002370  14FC 002E               1703  addqb      MOVE.B   #$2E,(A2)+
+00002374  14FC 0042               1704             MOVE.B   #$42,(A2)+
+00002378  4E75                    1705             RTS                                  *Add ".B" to the message
+0000237A                          1706  
+0000237A  14FC 002E               1707  addqw      MOVE.B   #$2E,(A2)+
+0000237E  14FC 0057               1708             MOVE.B   #$57,(A2)+
+00002382  4E75                    1709             RTS                                  *Add ".W" to the message
+00002384                          1710  
+00002384  14FC 002E               1711  addql      MOVE.B   #$2E,(A2)+
+00002388  14FC 004C               1712             MOVE.B   #$4C,(A2)+
+0000238C  4E75                    1713             RTS                                  *Add ".L" to the message     
+0000238E                          1714             
+0000238E                          1715  *---------------------------------------------------------------------
+0000238E                          1716  *SUBROUTINE: proccondition AS OF NOW ONLY DOES GT,LE,EQ,BRA
+0000238E                          1717  *   D4: Condition
+0000238E                          1718  *   A2: Message
+0000238E                          1719  *---------------------------------------------------------------------
+0000238E  B83C 000E               1720  proccondition  CMP.B   #%1110,D4
+00002392  6700 0020               1721             BEQ      gt                          *BGT
+00002396  B83C 000F               1722             CMP.B    #%1111,D4
+0000239A  6700 002C               1723             BEQ      le                          *BLE
+0000239E  B83C 0007               1724             CMP.B    #%0111,D4
+000023A2  6700 001A               1725             BEQ      eq                          *BEQ
+000023A6  B83C 0000               1726             CMP.B    #%0000,D4
+000023AA  6700 0026               1727             BEQ      ra                          *BRA
+000023AE  123C 0001               1728             MOVE.B   #1,D1                       *Not one of the conditionals required
+000023B2  4E75                    1729             RTS
+000023B4                          1730  
+000023B4  14FC 0047               1731  gt         MOVE.B   #$47,(A2)+
+000023B8  14FC 0054               1732             MOVE.B   #$54,(A2)+                  *Add "GT" to the message
+000023BC  4E75                    1733             RTS
+000023BE                          1734  
+000023BE  14FC 0045               1735  eq         MOVE.B   #$45,(A2)+
+000023C2  14FC 0051               1736             MOVE.B   #$51,(A2)+                  *Add "EQ" to the message
+000023C6  4E75                    1737             RTS
+000023C8                          1738  
+000023C8  14FC 004C               1739  le         MOVE.B   #$4C,(A2)+
+000023CC  14FC 0045               1740             MOVE.B   #$45,(A2)+                  *Add "LE" to the message
+000023D0  4E75                    1741             RTS
+000023D2                          1742  
+000023D2  14FC 0052               1743  ra         MOVE.B   #$52,(A2)+
+000023D6  14FC 0041               1744             MOVE.B   #$41,(A2)+                  *Add "RA" to the message
+000023DA  4E75                    1745             RTS
+000023DC                          1746             
+000023DC                          1747  *---------------------------------------------------------------------
+000023DC                          1748  *SUBROUTINE: wordtoasc Converts a word into ASCII
+000023DC                          1749  *   D4: Word to process
+000023DC                          1750  *   A2: Message
+000023DC                          1751  *---------------------------------------------------------------------
+000023DC  3F04                    1752  wordtoasc  MOVE.W   D4,-(SP)            *Save the word to the stack
+000023DE  E04C                    1753             LSR      #8,D4
+000023E0  E84C                    1754             LSR      #4,D4
+000023E2  0244 000F               1755             ANDI.W   #$000F,D4
+000023E6  4EB8 21FC               1756             JSR      hextoasc            *Process the first digit
+000023EA  3817                    1757             MOVE.W   (SP),D4
+000023EC  E04C                    1758             LSR      #8,D4
+000023EE  0244 000F               1759             ANDI.W   #$000F,D4
+000023F2  4EB8 21FC               1760             JSR      hextoasc            *Process the second digit
+000023F6  3817                    1761             MOVE.W   (SP),D4
+000023F8  E84C                    1762             LSR      #4,D4
+000023FA  0244 000F               1763             ANDI.W   #$000F,D4
+000023FE  4EB8 21FC               1764             JSR      hextoasc            *Process the third digit
+00002402  381F                    1765             MOVE.W   (SP)+,D4            *Move the stack pointer back
+00002404  0244 000F               1766             ANDI.W   #$000F,D4
+00002408  4EB8 21FC               1767             JSR      hextoasc            *Process the fourth digit
+0000240C  4E75                    1768             RTS
+0000240E                          1769  
+0000240E                          1770  *---------------------------------------------------------------------
+0000240E                          1771  *SUBROUTINE: seterror
+0000240E                          1772  *   D1: Error Flag
+0000240E                          1773  *---------------------------------------------------------------------
+0000240E  123C 0001               1774  seterror    MOVE.B  #1,D1
+00002412  4E75                    1775              RTS
+00002414                          1776             
+00002414                          1777  ************************* THE SUBROUTINE ******************************
+00002414                          1778  *---------------------------------------------------------------------
+00002414                          1779  *   Subroutine: formatOutput2
+00002414                          1780  *   Parameters: A1- Contains Message to be printed
+00002414                          1781  *---------------------------------------------------------------------
+00002414  45F9 00002604           1782  formatOutput    LEA     OutputBuffer,A2 * Empty String variable
+0000241A  1C3C 0009               1783  outerLoop       MOVE.B  #9,D6           * D7: counter for formating tab space
+0000241E                          1784  
+0000241E  1A11                    1785  copyChars       Move.B   (A1),D5        * Move contents of A1 to D5
+00002420  BA7C 0000               1786                  CMP      #$00,D5        * If:   D5 == #$00 end of string reached
+00002424  6700 0020               1787                  BEQ      printResult    *         Print new string contents 
+00002428                          1788                  
+00002428  0C11 0020               1789                  CMP.B    #$20,(A1)      * If:   Char in A1 is a space
+0000242C  6700 0008               1790                  BEQ      addSpaces      *         Add more spaces until D7 == 0
+00002430                          1791  
+00002430  14D9                    1792                  MOVE.B   (A1)+,(A2)+    * Else: Copy A1 contents to A2
+00002432  5306                    1793                  SUB.B    #1,D6          *         Subtract 1 from D7 (format counter)
+00002434  60E8                    1794                  BRA      copyChars      * Do it again until a space or string end is reached
+00002436                          1795  
+00002436  14D9                    1796  addSpaces       Move.B   (A1)+,(A2)+
+00002438  BC3C 0000               1797  spacesLoop      CMP.B    #0,D6          * if D7 == 0...
+0000243C  67DC                    1798                  BEQ      outerLoop      *      Go to next step & copy the rest
+0000243E  14FC 0020               1799                  Move.B   #$20,(A2)+     * Add a space to the formatted string
+00002442  5306                    1800                  SUB.B    #1,D6          * Subtract 1 from D7 (format counter)
+00002444  60F2                    1801                  BRA      spacesLoop     * Do it again until D7 == 0
+00002446                          1802  
+00002446  14FC 000D               1803  printResult    MOVE.B   #$0D,(A2)+           * Loading Carriage Return to message
+0000244A  14FC 000A               1804                 MOVE.B   #$0A,(A2)+           * Loading Line Feed to message
+0000244E  14FC 0000               1805                 MOVE.B   #$00,(A2)+           * Adding 'End of string' to message
+00002452  43F9 00002604           1806                 LEA      OutputBuffer, A1     * Moving new message to A1
+00002458  103C 000E               1807                 Move.B   #14,D0               * Loading print instruction to D0
+0000245C  4E4F                    1808                 Trap     #15                  * Printing to output window
+0000245E                          1809                 
+0000245E  4E75                    1810                 RTS                           * Return from Subroutine 
+00002460                          1811    
+00002460                          1812  
+00002460                          1813  ********************* SUBROUTINES **************************
+00002460                          1814  
+00002460                          1815  *---------------------------------------------------------------------
+00002460                          1816  *SUBROUTINE: invalidmsg adds "INVALID EA" to the message
+00002460                          1817  *   A2: end of message
+00002460                          1818  *---------------------------------------------------------------------
+00002460  14FC 0049               1819  invalidmsg  MOVE.B  #$49,(A2)+
+00002464  14FC 004E               1820              MOVE.B  #$4E,(A2)+
+00002468  14FC 0056               1821              MOVE.B  #$56,(A2)+
+0000246C  14FC 0041               1822              MOVE.B  #$41,(A2)+
+00002470  14FC 004C               1823              MOVE.B  #$4C,(A2)+
+00002474  14FC 0049               1824              MOVE.B  #$49,(A2)+
+00002478  14FC 0044               1825              MOVE.B  #$44,(A2)+
+0000247C  14FC 0020               1826              MOVE.B  #$20,(A2)+
+00002480  14FC 0045               1827              MOVE.B  #$45,(A2)+
+00002484  14FC 0041               1828              MOVE.B  #$41,(A2)+                  *Add "INVALID EA" to message
+00002488  14FC 0000               1829              MOVE.B  #0,(A2)+                    *Add null character
+0000248C  4E75                    1830              RTS
+0000248E                          1831  
+0000248E                          1832  *---------------------------------------------------------------------
+0000248E                          1833  *   Subroutine: checkStartLength
+0000248E                          1834  *   Parameters: D1 has the length of the user input
+0000248E                          1835  *               D4 has 1 if checking start length 2 if end length
+0000248E                          1836  *---------------------------------------------------------------------
+0000248E  B27C 0004               1837  checkLength    CMP      #$4,D1        * If: Length is less than 1
+00002492  6D00 001E               1838                 BLT      invalidLength *     Invalid Length
+00002496  B27C 0006               1839                 CMP      #6,D1         * If: Length is greater than 6
+0000249A  6E00 0016               1840                 BGT      invalidLength *     Invalid Length
+0000249E  B87C 0001               1841                 CMP      #1,D4         * If: D4 contains 1
+000024A2  6700 000A               1842                 BEQ      startStuff1   *     Do start address specific stuff
+000024A6  B246                    1843                 CMP      D6,D1         * If: D4 == 2 and D6 < D1 
+000024A8  6D00 0008               1844                 BLT      invalidLength *     Invalid Length
+000024AC  4E75                    1845                 RTS
+000024AE                          1846                 
+000024AE  1C01                    1847  startStuff1    Move.B   D1,D6         * Storing length to D6 to compare 
+000024B0  4E75                    1848                 RTS                    * to endingAddr later on
+000024B2                          1849                 
+000024B2  43F9 00002C48           1850  invalidLength  LEA      invalidLen,A1 * Moving error message to A1 
+000024B8  103C 000E               1851                 Move.B   #14,D0        * Moving cout instruction to D0
+000024BC  4E4F                    1852                 Trap     #15           * Executing instruction
+000024BE  5547                    1853                 SUBQ     #2,D7
+000024C0  B87C 0001               1854                 CMP      #1,D4         * If D4 == 1
+000024C4  6700 0006               1855                 BEQ      getStart      *     Get the starting adress again
+000024C8  4EB8 10C6               1856                 JSR      getEndAddr    * Else: get the ending address again
+000024CC                          1857                 
+000024CC  4EB8 1052               1858  getStart       JSR      getStartAddr  * Goes back to get starting address
+000024D0                          1859          
+000024D0                          1860          
+000024D0                          1861  *---------------------------------------------------------------------
+000024D0                          1862  *   Subroutine: toHex           
+000024D0                          1863  *   Parameters: A1 has the string to be converted
+000024D0                          1864  *               D1 has the length of the string
+000024D0                          1865  *               D4 has 1 if converting startAddress 2 if endAddress
+000024D0                          1866  *---------------------------------------------------------------------
+000024D0  1A01                    1867  toHex          Move.B   D1, D5        * copying length to D5 for counter
+000024D2  4283                    1868                 CLR.L    D3 
+000024D4  1419                    1869  convertLoop    Move.B   (A1)+,D2      * Move number to data register for conversion
+000024D6  0C02 0039               1870                 CMPI.B   #$39,D2       * If it is a number
+000024DA  6F00 001A               1871                 BLE      number        *   go to number conversion
+000024DE                          1872                 
+000024DE  0C02 0047               1873                 CMPI.B   #$47,D2       * If its a letter >= G or lowercase
+000024E2  6C00 0042               1874                 BGE      invHex        *   Invalid Entry
+000024E6                          1875                 
+000024E6  0C02 0040               1876                 CMPI.B   #$40,D2       * If it is : ; < = > ? or @ 
+000024EA  6F00 003A               1877                 BLE      invHex        *   Invalid Entry
+000024EE                          1878                 
+000024EE  0402 0037               1879                 SUBI.B   #$37,D2       * Else: it is a capital letter A-F
+000024F2  6000 0012               1880                 BRA      saveValue     *       save value
+000024F6                          1881                 
+000024F6                          1882                 
+000024F6  0C02 002F               1883  number         CMPI.B   #$2F,D2       * If: It is a symbol:
+000024FA  6F00 002A               1884                 BLE      invHex        *     invalid entry
+000024FE  0402 0030               1885                 SUBI.B   #$30,D2       * Else: subtract #$30 from D2
+00002502  6000 0002               1886                 BRA      saveValue     *       save value
+00002506                          1887                 
+00002506  5305                    1888  saveValue      SUBI.B   #%1,D5        * Deincrement Counter
+00002508  D602                    1889                 ADD.B    D2,D3         * Add D2 to D3
+0000250A  0C05 0000               1890                 CMPI.B   #%0,D5        * If: counter is at 0
+0000250E  6700 0006               1891                 BEQ      Done          *     then we are done converting
+00002512  E99B                    1892                 ROL.L    #4,D3         * Else: shift bits over for next number
+00002514  60BE                    1893                 BRA      convertLoop   * repeat the loop until D5 == 0
+00002516                          1894  
+00002516  B87C 0001               1895  done           CMP      #1,D4         * If D4 == 1
+0000251A  6700 0006               1896                 BEQ      saveStart     *    Do startAddr specific stuff
+0000251E  2C43                    1897                 MoveA.L  D3, A6        * Else: Move Address to A6
+00002520  4E75                    1898                 RTS                    * Return to system
+00002522                          1899  
+00002522  2A43                    1900  saveStart      MoveA.L  D3, A5        * Move Start Address to A5
+00002524  4E75                    1901                 RTS                    * end range later
+00002526                          1902  
+00002526  43F9 00002C92           1903  invHex         LEA      invalidHex,A1 * Moving error message to A1 
+0000252C  103C 000E               1904                 Move.B   #14,D0        * Moving cout instruction to D0
+00002530  4E4F                    1905                 Trap     #15           * Executing instruction
+00002532  5547                    1906                 SUBQ     #2,D7
+00002534  B87C 0001               1907                 CMP      #1,D4         * If D4 == 1
+00002538  6700 0006               1908                 BEQ      getStart2     *    Get the start address again
+0000253C  4EB8 10C6               1909                 JSR      getEndAddr    * Else: get the ending address
+00002540                          1910                 
+00002540  4EB8 1052               1911  getStart2      JSR      getStartAddr  * Retreive start address again
+00002544                          1912  
+00002544                          1913  *---------------------------------------------------------------------
+00002544                          1914  *   Subroutine: Check Odd          
+00002544                          1915  *   Parameters: A1 has the string to be converted
+00002544                          1916  *               D3 has the converted Hex value of A1
+00002544                          1917  *               D2 has the last digit of D3
+00002544                          1918  *               D4 has 1 if checking start Address 2 if end Address
+00002544                          1919  *---------------------------------------------------------------------
+00002544  123C 0002               1920  checkOdd      Move.B    #$2, D1       * Move 2 into D1 for division
+00002548  84C1                    1921                DIVU      D1,D2         * Divide D2 by D1
+0000254A  4842                    1922                SWAP      D2            * Swap bit to check remainder
+0000254C  B43C 0001               1923                CMP.B     #$1,D2        * If: remainder == 1
+00002550  6700 0006               1924                BEQ       invalidOdd    *     Invalid Entry  
+00002554  4282                    1925                CLR.L     D2
+00002556  4E75                    1926                RTS                     * Else: Return to system
+00002558                          1927                
+00002558  43F9 00002CDC           1928  invalidOdd    LEA      invalidMod,A1  * Moving error message to A1 
+0000255E  103C 000E               1929                Move.B   #14,D0         * Moving cout instruction to D0
+00002562  4E4F                    1930                Trap     #15            * Executing instruction
+00002564  4282                    1931                CLR.L    D2
+00002566  5547                    1932                SUBQ     #2,D7
+00002568  B87C 0001               1933                CMP      #1,D4          * If D4 == 1
+0000256C  6700 0006               1934                BEQ      getStart3      *    Get start address again
+00002570  4EB8 10C6               1935                JSR      getEndAddr     * Else: get ending address
+00002574                          1936                 
+00002574  4EB8 1052               1937  getStart3     JSR      getStartAddr   * Retreive start address again
+00002578                          1938  
+00002578                          1939  *---------------------------------------------------------------------
+00002578                          1940  *   Subroutine: Check Range         
+00002578                          1941  *   Parameters: D3 has the converted Hex value of A1
+00002578                          1942  *               D4 has 1 if checking start Address 2 if end Address
+00002578                          1943  *               A5 is the starting address if D4 == 2
+00002578                          1944  *---------------------------------------------------------------------
+00002578  B83C 0001               1945  checkRange    CMP.B    #$1,D4        * If: D4 == 1
+0000257C  6700 000C               1946                BEQ      checkStartR   *     Check start range
+00002580  B68D                    1947                CMP.L    A5,D3         * If: D5(startAddr) < D3(currentAddr)
+00002582  6D00 0020               1948                BLT      invalidRange  *     Invalid Entry
+00002586  6000 000E               1949                BRA      checkEndR     * Else: Check End Range
+0000258A                          1950                            
+0000258A  223C 00003000           1951  checkStartR   Move.L   #$003000,D1   * Loading minimum address required
+00002590  B681                    1952                CMP.L    D1,D3         * If: D1 < D3
+00002592  6D00 0010               1953                BLT      invalidRange  *     Invalid Entry
+00002596                          1954  
+00002596  223C 00A00000           1955  checkEndR     Move.L   #$A00000,D1   * Loading maximum address required 
+0000259C  B681                    1956                CMP.L    D1,D3         * If: D1 > D3
+0000259E  6E00 0004               1957                BGT      invalidRange  *     Invalid Entry
+000025A2  4E75                    1958                RTS                    * Else: Entry is valid, return
+000025A4                          1959                
+000025A4  43F9 00002D26           1960  invalidRange  LEA      invalidRan,A1 * Moving error message to A1 
+000025AA  103C 000E               1961                Move.B   #14,D0        * Moving cout instruction to D0
+000025AE  4E4F                    1962                Trap     #15           * Executing instruction
+000025B0  4282                    1963                CLR.L    D2            * Clear D2 for next iteration
+000025B2  5547                    1964                SUBQ     #2,D7
+000025B4  B87C 0001               1965                CMP      #1,D4         * If: D4 == 1
+000025B8  6700 0006               1966                BEQ      getStart4     *     Get new starting address
+000025BC  4EB8 10C6               1967                JSR      getEndAddr    * Else: Get new ending address
+000025C0                          1968                 
+000025C0  4EB8 1052               1969  getStart4     JSR      getStartAddr  * Get starting address again   
+000025C4                          1970  
+000025C4                          1971  *---------------------------------------------------------------------
+000025C4                          1972  *   Subroutine: anotherPage        
+000025C4                          1973  *   Parameters: D1 has length of the user input 0 == go again
+000025C4                          1974  *---------------------------------------------------------------------                
+000025C4  B27C 0001               1975  anotherPage  CMP      #$1,D1        * If: Length is less than 1
+000025C8  6D00 0004               1976               BLT      another       *     show another page
+000025CC  4E75                    1977               RTS                    * Else: ask if new range desired
+000025CE                          1978  
+000025CE  103C 000B               1979  another      Move.B   #11, D0       * Trap task 11 will be defined by D1
+000025D2  323C FF00               1980               Move.W   #$FF00,D1     * Instruction to clear page
+000025D6  4E4F                    1981               TRAP     #15           * Execute instruction
+000025D8  1E3C 001E               1982               Move.B   #30,D7        * Resetting print counter
+000025DC  4E75                    1983               RTS  ****** TODO ******* 
+000025DE                          1984  
+000025DE                          1985  *---------------------------------------------------------------------
+000025DE                          1986  *   Subroutine: goAgain       
+000025DE                          1987  *   Parameters: 
+000025DE                          1988  *--------------------------------------------------------------------- 
+000025DE  43F9 00002BB0           1989  goAgain      LEA      userInput, A1
+000025E4  103C 0002               1990               Move.B   #2,D0         * Moving cin instruction to D0
+000025E8  4E4F                    1991               Trap     #15           * Executing instruction
+000025EA                          1992              
+000025EA  5B47                    1993               SUBQ     #5,D7
+000025EC                          1994               
+000025EC  B27C 0001               1995               CMP      #$1,D1        * If: Length is less than 1
+000025F0  6D00 0004               1996               BLT      newRange      *     Restart program
+000025F4  4E75                    1997               RTS                    * Else: End Program
+000025F6                          1998  
+000025F6  103C 000B               1999  newRange     Move.B   #11, D0       * Trap task 11 will be defined by D1
+000025FA  323C FF00               2000               Move.W   #$FF00,D1     * Instruction to clear page
+000025FE  4E4F                    2001               TRAP     #15           * Execute instruction
+00002600  4EF8 1000               2002               JMP      START
+00002604                          2003  
+00002604                          2004  ****************** Variables and Constants for the Test *************************    
+00002604  =00003000               2005  InputLocation   EQU     $3000 
+00002604                          2006  
+00002604  =0000000D               2007  CR      EQU    $0D
+00002604  =0000000A               2008  LF      EQU    $0A
+00002604                          2009  OutputBuffer  DS.L  80
+00002744                          2010  message        DS.L        25
+000027A8                          2011  ********************* Prompt Messages **************************       
+000027A8= 20 2A 20 20 20 20 ...   2012  prompt       DC.B  ' *     Please Enter an Even Starting Address in Hexidecimal      * ',CR,LF,0
+000027EE= 20 2A 20 45 6E 74 ...   2013  promptSpecs  DC.B  ' * Entry should be a long-word (no more than 6 characters long)  * ',CR,LF,0
+00002834= 20 2A 20 20 20 20 ...   2014  promptSpecs2 DC.B  ' *          with no symbols and between 3000 and A00000          * ',CR,LF,0
+0000287A= 2D 2D 2D 2D 2D 2D ...   2015  breakLn      DC.B  '-------------------------------------------------------------------',CR,LF,0
+000028C0                          2016  
+000028C0                          2017  
+000028C0= 20 2A 20 20 20 20 ...   2018  prompt2     DC.B   ' *      Please Enter an Even Ending Address in Hexidecimal       * ',CR,LF,0
+00002906= 20 2A 20 45 6E 74 ...   2019  promptEnd   DC.B   ' * Entry should be a long-word (no more than 6 characters long)  * ',CR,LF,0
+0000294C= 20 2A 20 77 69 74 ...   2020  PromptEnd2  DC.B   ' * with no symbols and between your starting address and A00000) * ',CR,LF,0
+00002992                          2021  
+00002992= 20 2A 20 20 48 65 ...   2022  corrInput   DC.B   ' *  Here are the first few instructions from your start address  * ',CR,LF,0
+000029D8                          2023  
+000029D8= 20 2A 20 20 20 20 ...   2024  prompt3     DC.B   ' *         Would you like to view another page of memory?        * ',CR,LF,0
+00002A1E= 20 2A 20 20 20 20 ...   2025  instruct    DC.B   ' *     Press Enter to Continue or type "NO" to enter another range  * ',CR,LF,0
+00002A67                          2026  
+00002A67= 20 2A 20 20 20 20 ...   2027  againPrompt DC.B   ' *    Would you like to disassemble another segment of memory?   * ',CR,LF,0
+00002AAD= 20 2A 20 20 20 20 ...   2028  continueprompt  DC.B ' *         Type "NO" to quit or press enter to continue         * ',CR,LF,0
+00002AF2= 20 20 20 20 20 20 ...   2029  center      DC.B   '                             ',0                                  
+00002B10                          2030  
+00002B10                          2031  startingAddr    DS.B    80      Stores starting address from user input
+00002B60                          2032  endingAddr      DS.B    80      Stores ending address from user input
+00002BB0                          2033  userInput       DS.B    80      Stores user input
+00002C00                          2034  
+00002C00                          2035  ********************** Error Messages ************************** 
+00002C00= 0D 0A 2A 2D 2A 20 ...   2036  invalidMess DC.B   CR,LF,'*-* !!!! Sorry, that is an invalid entry, please try again !!!! *-*',CR,LF,0
+00002C48                          2037  
+00002C48= 0D 0A 2A 2D 2A 20 ...   2038  invalidLen  DC.B   CR,LF,'*-* !!!! Sorry, that is an invalid length please try again !!!! *-*',CR,LF,CR,LF,0
+00002C92= 0D 0A 2A 2D 2A 20 ...   2039  invalidHex  DC.B   CR,LF,'*-* !! Sorry, that is an invalid hex number please try again !! *-*',CR,LF,CR,LF,0
+00002CDC= 0D 0A 2A 2D 2A 20 ...   2040  invalidMod  DC.B   CR,LF,'*-* !!!!!! Sorry, that is an odd number please try again !!!!!! *-*',CR,LF,CR,LF,0
+00002D26= 0D 0A 2A 2D 2A 20 ...   2041  invalidRan  DC.B   CR,LF,'*-* !!!! Sorry, that is an invalid range, please try again !!!! *-*',CR,LF,CR,LF,0
+00002D70                          2042  
+00002D70                          2043  
+00002D70                          2044                 END   $1000 
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ABSOLLONG           2188
+ABSOLWORD           219E
+ADDA                22EE
+ADDADDRESSES        22A4
+ADDAMSG             229A
+ADDDEST             2320
+ADDDESTCHECK        1D8C
+ADDERROR            1DBE
+ADDERRORCHECK       1D7A
+ADDIMM              1DB4
+ADDQB               2370
+ADDQERROR           1A3E
+ADDQERRORCHECK      1A0C
+ADDQIMM             1A34
+ADDQL               2384
+ADDQSIZE            2352
+ADDQW               237A
+ADDSBYTE            2268
+ADDSIZE             2224
+ADDSLONG            227C
+ADDSPACES           2436
+ADDSWORD            2272
+AGAINPROMPT         2A67
+ANDDESTCHECK        1CEC
+ANDERROR            1D16
+ANDERRORCHECK       1CB6
+ANDIMM              1D0C
+ANOTHER             25CE
+ANOTHERPAGE         25C4
+BASETEN             220C
+BIT16               1AA4
+BIT32               1A9C
+BREAKLN             287A
+CENTER              2AF2
+CHECKADD            2286
+CHECKENDR           2596
+CHECKIMM            17DC
+CHECKLENGTH         248E
+CHECKODD            2544
+CHECKRANGE          2578
+CHECKSTARTR         258A
+CODE000             2102
+CODE0000            1328
+CODE0001            132E
+CODE001             210E
+CODE0010            13F2
+CODE0011            1464
+CODE010             211A
+CODE0100            14D6
+CODE0101            19A6
+CODE011             212E
+CODE0110            1A68
+CODE0111            1ACC
+CODE100             2146
+CODE1000            1B24
+CODE1001            1BD0
+CODE101             215E
+CODE1010            1C78
+CODE1011            1C7E
+CODE110             2164
+CODE1100            1C84
+CODE1101            1D3C
+CODE111             216A
+CODE1110            1DE4
+CODE1111            20CC
+CONTINUEPROG        1290
+CONTINUEPROMPT      2AAD
+CONVERTLOOP         24D4
+COPYCHARS           241E
+CORRINPUT           2992
+CR                  D
+DECRADONE           1722
+DECRATRUE           1708
+DECRDDONE           16E0
+DECRDTRUE           16C6
+DECRLOOPA           16E8
+DIRECTION           1FB6
+DONE                2516
+EA_JUMP             20D2
+ENDINGADDR          2B60
+EQ                  23BE
+ERROR               11C8
+FORMATOUTPUT        2414
+GETENDADDR          10C6
+GETSTART            24CC
+GETSTART2           2540
+GETSTART3           2574
+GETSTART4           25C0
+GETSTARTADDR        1052
+GOAGAIN             25DE
+GT                  23B4
+HEXTOASC            21FC
+IMMADDRESSING       21BC
+IMMBYTE             21DA
+IMMCOUNT            2044
+IMMEIGHT            2062
+INPUTLOCATION       3000
+INSTRUCT            2A1E
+INVALIDEA           11B4
+INVALIDHEX          2C92
+INVALIDLEN          2C48
+INVALIDLENGTH       24B2
+INVALIDMESS         2C00
+INVALIDMOD          2CDC
+INVALIDMSG          2460
+INVALIDODD          2558
+INVALIDRAN          2D26
+INVALIDRANGE        25A4
+INVHEX              2526
+ISADDRESS           2214
+JMP_TABLE           12C8
+JSRCHECK            1782
+JSRERROR            17B6
+JSRIMM              17AC
+JUMPSUB             174A
+LE                  23C8
+LEACHECK            1836
+LF                  A
+LOADEA              17E6
+LOADNEWPAGE         1212
+LOOPADONE           1664
+LOOPDDONE           16A2
+LOOPSTART           160E
+MAINDONE            1246
+MAINLOOP            1130
+MEMARITH            1E42
+MEMERRORCHECK       2080
+MEMIMM              20A8
+MEMLOGICAL          1E84
+MEMROTATE           1EC6
+MEMSHIFT            1E1A
+MEMTOREG            1942
+MEMTOREGCHECK       1976
+MESSAGE             2744
+MOVEADDRESS         221E
+MOVECHECK           13A2
+MOVEERROR           13C8
+MOVEIMM             13BE
+MOVEMATRUE          164C
+MOVEMDECRLOOPD      16A6
+MOVEMDTRUE          168A
+MOVEMERROR          15E0
+MOVEMIMM            15D6
+MOVEMLOOPA          162E
+MOVEMLOOPD          166C
+MOVEMSIZE           1922
+MOVEMULT            1526
+NEWRANGE            25F6
+NOOP                1738
+NOTBYTE             1904
+NOTCHECK            18A0
+NOTERROR            18BC
+NOTIMM              18B2
+NOTLONG             1918
+NOTSIZE             18E2
+NOTWORD             190E
+NUMBER              24F6
+ORDESTCHECK         1B84
+ORERR               1BAE
+ORERRORCHECK        1B52
+ORIMM               1BA4
+OUTERLOOP           241A
+OUTPUTBUFFER        2604
+PRINTRESULT         2446
+PROCCONDITION       238E
+PROCDISPLACE        1AAC
+PROMPT              27A8
+PROMPT2             28C0
+PROMPT3             29D8
+PROMPTEND           2906
+PROMPTEND2          294C
+PROMPTSPECS         27EE
+PROMPTSPECS2        2834
+RA                  23D2
+REGARITH            1F7C
+REGERRORCHECK       206E
+REGLOGICAL          1F42
+REGROTATE           1F08
+REGSIZE             1FD2
+REGTOMEM            156E
+REGTOMEMCHECK       15A6
+RETURNSUB           1726
+RIGHT               1FCC
+SAVESTART           2522
+SAVEVALUE           2506
+SETERROR            240E
+SHIFT               C
+SHIFTBYTE           1FF4
+SHIFTCOUNT          201E
+SHIFTERROR          20B2
+SHIFTLONG           2010
+SHIFTWORD           2002
+SPACESLOOP          2438
+START               1000
+STARTINGADDR        2B10
+STARTSTUFF1         24AE
+STOPPROG            12BE
+SUBDESTCHECK        1C24
+SUBERROR            1C52
+SUBERRORCHECK       1C02
+SUBIMM              1C48
+TOHEX               24D0
+USERINPUT           2BB0
+WORDMOVEM           1938
+WORDTOASC           23DC
+_NOT                185E
